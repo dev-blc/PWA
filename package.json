@@ -21,9 +21,9 @@
         "prettify": "prettier -w",
         "start": "next start",
         "test": "vitest",
-        "test:e2e": "playwright test",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "test:e2e": "bash ./setup-and-test.sh"
     },
     "dependencies": {
         "@coinbase/cbpay-js": "2.3.0",
