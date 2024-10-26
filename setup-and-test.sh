@@ -3,6 +3,7 @@
 anvil &
 ANVIL_PID=$!
 echo $ANVIL_PID
+<<<<<<< HEAD
 
 cd ./contracts
 forge script ./script/e2e.s.sol --rpc-url http://localhost:8545 --broadcast
