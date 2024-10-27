@@ -28,8 +28,8 @@
     "dependencies": {
         "@coinbase/cbpay-js": "2.3.0",
         "@gatefi/js-sdk": "0.20.0",
-        "@privy-io/react-auth": "1.83.1",
-        "@privy-io/server-auth": "1.12.1",
+        "@privy-io/react-auth": "1.92.2",
+        "@privy-io/server-auth": "1.15.0",
         "@privy-io/wagmi": "0.2.12",
         "@radix-ui/react-alert-dialog": "1.1.2",
         "@radix-ui/react-avatar": "1.1.1",
