@@ -2,7 +2,7 @@
 
 import logo from '@/public/app/images/pool-logo-horizontal.png'
 import type { PrivyProviderProps } from '@privy-io/react-auth'
-import { base, baseSepolia } from 'viem/chains'
+import { base, baseSepolia, anvil } from 'viem/chains'
 
 if (!process.env.NEXT_PUBLIC_PRIVY_APP_ID) {
     throw new Error('Missing NEXT_PUBLIC_PRIVY_APP_ID')
@@ -14,6 +14,7 @@ const chainConfig = {
     mainnet: base,
     testnet: baseSepolia,
     development: baseSepolia,
+    local: anvil
 }
 
 const chain = chainConfig[network as keyof typeof chainConfig]

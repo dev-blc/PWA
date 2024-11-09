@@ -1406,6 +1406,7 @@ export const poolAbi = [
 export const poolAddress = {
     8453: '0x5CA11740144513897Be27e3E82D75Aa75067F712',
     84532: '0x5C22662210E48D0f5614cACA6f7a6a938716Ea26',
+    31337: '0x5FbDB2315678afecb367f032d93F642f64180aa3', // The default address for anvil.
 } as const
 
 /**
@@ -1536,6 +1537,7 @@ export const tokenAbi = [
 export const tokenAddress = {
     8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     84532: '0xfD2Ec58cE4c87b253567Ff98ce2778de6AF0101b',
+    31337: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', // The default address for anvil.
 } as const
 
 /**

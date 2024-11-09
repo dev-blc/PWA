@@ -1,7 +1,7 @@
 import { tokenAddress, poolAddress } from '@/types/contracts'
 import { createConfig, getPublicClient, http } from '@wagmi/core'
 import type { Address, Chain, Transport } from 'viem'
-import { base, baseSepolia } from 'viem/chains'
+import { base, baseSepolia, anvil } from 'viem/chains'
 
 const network = process.env.NEXT_PUBLIC_NETWORK || 'development'
 
@@ -9,6 +9,7 @@ const chainConfig = {
     mainnet: base,
     testnet: baseSepolia,
     development: baseSepolia,
+    local: anvil,
 }
 
 const chain = chainConfig[network as keyof typeof chainConfig] as Chain
