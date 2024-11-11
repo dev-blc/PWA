@@ -104,6 +104,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
             action={formData => {
                 if (!avatarChanged) formData.delete('avatar')
                 console.log('Formdata entries to send', Array.from(formData.entries()))
+                toast('Saving profile...')
                 formAction(formData)
             }}
             className='mx-auto flex w-full max-w-full flex-col'>
