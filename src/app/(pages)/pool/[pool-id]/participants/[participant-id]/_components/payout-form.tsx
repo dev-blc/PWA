@@ -57,7 +57,12 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
         ]
 
         try {
-            executeTransactions(args)
+            executeTransactions(args, {
+                type: 'SET_WINNER',
+                onSuccess: () => {
+                    toast.success('Payout Successful', { description: `Transaction: ${hash}` })
+                },
+            })
         } catch (error) {
             console.log('setWinner Error', error)
         }
