@@ -48,7 +48,11 @@ export const getCspDirectives = () => ({
         'https://explorer-api.walletconnect.com',
         'https://*.poolparty.cc',
     ],
-    'font-src': ["'self'"],
+    'font-src': [
+        "'self'",
+        'https://cdn.privy.io',
+        'data:', // For base64 encoded fonts
+    ],
 
     // Form/Frame controls
     'form-action': ["'self'"],
