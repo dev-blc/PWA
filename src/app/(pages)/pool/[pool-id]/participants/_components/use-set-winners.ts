@@ -31,14 +31,22 @@ export function useSetWinners(poolId: string) {
             })
 
             try {
-                await executeTransactions([
+                await executeTransactions(
+                    [
+                        {
+                            address: currentPoolAddress,
+                            abi: [SetWinnersFunction],
+                            functionName: SetWinnersFunction.name,
+                            args: [poolId, addresses, amounts],
+                        },
+                    ],
                     {
-                        address: currentPoolAddress,
-                        abi: [SetWinnersFunction],
-                        functionName: SetWinnersFunction.name,
-                        args: [poolId, addresses, amounts],
+                        type: 'SET_WINNERS',
+                        onSuccess: () => {
+                            toast.success('Successfully set payouts')
+                        },
                     },
-                ])
+                )
             } catch (error) {
                 console.error('Set Winner Error', error)
                 toast.error('Failed to set payouts')
