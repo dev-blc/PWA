@@ -21,6 +21,7 @@ interface SmartTransactionResult {
 
 interface TransactionConfig {
     type:
+        | 'CLAIM_WINNING'
         | 'CLAIM_WINNINGS'
         | 'CREATE_POOL'
         | 'ENABLE_DEPOSITS'
