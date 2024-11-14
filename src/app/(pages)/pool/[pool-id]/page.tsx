@@ -18,7 +18,7 @@ export default function PoolDetailsPage({ params: { 'pool-id': poolId } }: Props
 
     queryClient.prefetchQuery({
         queryKey: ['userAdminStatus'],
-        queryFn: () => getUserAdminStatusActionWithCookie(),
+        queryFn: getUserAdminStatusActionWithCookie,
     })
 
     return (

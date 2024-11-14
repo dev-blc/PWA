@@ -81,7 +81,12 @@ export function useCreatePool() {
         setHasAttemptedChainCreation(true)
         isCreatingPool.current = true
         setStep(Steps.CreatingChain)
-        executeTransactions([contractCall])
+        executeTransactions([contractCall], {
+            type: 'CREATE_POOL',
+            onSuccess: () => {
+                setStep(Steps.UpdatingStatus)
+            },
+        })
             .then(() => setStep(Steps.UpdatingStatus))
             .catch(error => {
                 console.log('Transaction attempt failed', error)

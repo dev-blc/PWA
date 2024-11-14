@@ -16,6 +16,7 @@ import PoolDetailsParticipants from '@/app/(pages)/pool/[pool-id]/_components/po
 import PoolDetailsInfo from '@/app/(pages)/pool/[pool-id]/_components/pool-details-info'
 import BottomBarHandler from '@/app/(pages)/pool/[pool-id]/_components/bottom-bar-handler'
 import { Skeleton } from '@/app/_components/ui/skeleton'
+import { useEffect } from 'react'
 
 export default function PoolDetails({ poolId }: { poolId: string }) {
     const {
@@ -35,6 +36,17 @@ export default function PoolDetails({ poolId }: { poolId: string }) {
         queryKey: ['userAdminStatus'],
         queryFn: () => getUserAdminStatusActionWithCookie(),
     })
+
+    console.log('🔄 [PoolDetails] Rendering with poolId:', poolId)
+
+    useEffect(() => {
+        console.log('👀 [PoolDetails] Effect: Pool data changed', {
+            isPoolPending,
+            isUserInfoPending,
+            hasPool: Boolean(pool),
+            isAdmin,
+        })
+    }, [pool, isAdmin, isPoolPending, isUserInfoPending])
 
     if (isPoolPending || isUserInfoPending)
         return (

@@ -15,6 +15,7 @@ import { currentPoolAddress } from '@/app/_server/blockchain/server-config'
 import { poolAbi } from '@/types/contracts'
 import { useUserInfo } from '@/hooks/use-user-info'
 import { Loader2Icon } from 'lucide-react'
+import { useConfetti } from '@/hooks/use-confetti'
 
 export default function ClaimablePrizesList() {
     const setBottomBarContent = useAppStore(state => state.setBottomBarContent)
@@ -23,6 +24,7 @@ export default function ClaimablePrizesList() {
     const { claimablePools, isPending } = useClaimablePools()
     const { executeTransactions } = useTransactions()
     const { data: user } = useUserInfo()
+    const { startConfetti } = useConfetti()
 
     const poolIdsToClaimFrom = claimablePools?.[0] || []
 
@@ -39,14 +41,23 @@ export default function ClaimablePrizesList() {
             name: 'claimWinnings',
         })
 
-        executeTransactions([
+        executeTransactions(
+            [
+                {
+                    address: currentPoolAddress,
+                    abi: [ClaimWinningsFunction],
+                    functionName: ClaimWinningsFunction.name,
+                    args: [poolIdsToClaimFrom, walletAddresses],
+                },
+            ],
             {
-                address: currentPoolAddress,
-                abi: [ClaimWinningsFunction],
-                functionName: ClaimWinningsFunction.name,
-                args: [poolIdsToClaimFrom, walletAddresses],
+                type: 'CLAIM_WINNINGS',
+                onSuccess: () => {
+                    console.log('Successfully claimed all winnings')
+                    startConfetti()
+                },
             },
-        ])
+        )
     }
 
     useEffect(() => {

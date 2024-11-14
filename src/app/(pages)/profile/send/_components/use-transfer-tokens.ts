@@ -34,14 +34,22 @@ export function useTransferToken() {
             })
 
             try {
-                await executeTransactions([
+                await executeTransactions(
+                    [
+                        {
+                            address: currentTokenAddress,
+                            abi: [TransferFunction],
+                            functionName: TransferFunction.name,
+                            args: [withdrawToAddress, amount],
+                        },
+                    ],
                     {
-                        address: currentTokenAddress,
-                        abi: [TransferFunction],
-                        functionName: TransferFunction.name,
-                        args: [withdrawToAddress, amount],
+                        type: 'TRANSFER_TOKEN',
+                        onSuccess: () => {
+                            console.log('Successfully transferred token')
+                        },
                     },
-                ])
+                )
             } catch (error) {
                 console.error('Transfer Token Error', error)
                 toast.error('Failed to transfer token')

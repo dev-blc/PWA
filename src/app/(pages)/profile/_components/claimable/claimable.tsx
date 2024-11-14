@@ -32,14 +32,24 @@ export default function ClaimablePrizes() {
         })
 
         try {
-            await executeTransactions([
+            await executeTransactions(
+                [
+                    {
+                        address: currentPoolAddress,
+                        abi: [ClaimWinningsFunction],
+                        functionName: ClaimWinningsFunction.name,
+                        args: [poolIds, walletAddresses],
+                    },
+                ],
                 {
-                    address: currentPoolAddress,
-                    abi: [ClaimWinningsFunction],
-                    functionName: ClaimWinningsFunction.name,
-                    args: [poolIds, walletAddresses],
+                    type: 'CLAIM_WINNINGS',
+                    onSuccess: () => {
+                        console.log('Successfully claimed all winnings')
+                        toast.success('Successfully claimed all winnings')
+                        startConfetti()
+                    },
                 },
-            ])
+            )
             toast.success('Successfully claimed all winnings')
             startConfetti()
         } catch (error) {

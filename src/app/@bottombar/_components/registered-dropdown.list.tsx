@@ -6,8 +6,6 @@
 
 'use client'
 
-import { useQueryClient } from '@tanstack/react-query'
-import { useAccount } from 'wagmi'
 import type { Variants } from 'framer-motion'
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
@@ -51,9 +49,7 @@ const RegisteredDropdownList: React.FC<{ setOpen: (open: boolean) => void; poolI
 }): JSX.Element => {
     const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(null)
     const dropdownListRef = useRef<HTMLDivElement | null>(null)
-    const queryClient = useQueryClient()
     const { executeTransactions, isPending, isConfirmed } = useTransactions()
-    const { address } = useAccount()
 
     const handleUnregisterClick = () => {
         setOpen(false)
@@ -63,14 +59,22 @@ const RegisteredDropdownList: React.FC<{ setOpen: (open: boolean) => void; poolI
             name: 'selfRefund',
         })
 
-        executeTransactions([
+        executeTransactions(
+            [
+                {
+                    address: currentPoolAddress,
+                    abi: [UnregisterPoolFunction],
+                    functionName: UnregisterPoolFunction.name,
+                    args: [BigInt(poolId)],
+                },
+            ],
             {
-                address: currentPoolAddress,
-                abi: [UnregisterPoolFunction],
-                functionName: UnregisterPoolFunction.name,
-                args: [BigInt(poolId)],
+                type: 'UNREGISTER_POOL',
+                onSuccess: () => {
+                    console.log('Successfully unregistered from pool')
+                },
             },
-        ])
+        )
     }
 
     /**

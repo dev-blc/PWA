@@ -1,9 +1,15 @@
 import { useWallets } from '@privy-io/react-auth'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import type { Hash, TransactionReceipt } from 'viem'
+import type { Hash, PublicClient, TransactionReceipt } from 'viem'
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useCallsStatus, useWriteContracts } from 'wagmi/experimental'
 import { ContractCall } from '@/app/_lib/entities/models/contract-call'
+import { useAppStore } from '../providers/app-store.provider'
+import { waitForTransactionReceipt } from 'viem/actions'
+import { getPublicClient } from '@wagmi/core'
+import { getConfig } from '../providers/configs/wagmi.config'
+import { ConnectorNotConnectedError } from '@wagmi/core'
+import { toast } from 'sonner'
 
 interface SmartTransactionResult {
     hash: Hash | null
@@ -14,20 +20,22 @@ interface SmartTransactionResult {
 }
 
 interface TransactionConfig {
-    type: 'JOIN_POOL' | 'ENABLE_DEPOSITS' | 'START_POOL' | 'END_POOL' | 'CLAIM_WINNING' | 'SET_WINNER' | 'SET_WINNERS'
+    type:
+        | 'CLAIM_WINNINGS'
+        | 'CREATE_POOL'
+        | 'ENABLE_DEPOSITS'
+        | 'END_POOL'
+        | 'JOIN_POOL'
+        | 'SET_WINNER'
+        | 'SET_WINNERS'
+        | 'START_POOL'
+        | 'TRANSFER_TOKEN'
+        | 'UNREGISTER_POOL'
     onSuccess?: () => void
 }
 
 export default function useTransactions() {
     const transactionInProgressRef = useRef(false)
-    const [isInitialized, setIsInitialized] = useState(false)
-
-    useEffect(() => {
-        if (!isInitialized) {
-            console.log('🔄 [useTransactions] Initializing hook')
-            setIsInitialized(true)
-        }
-    }, [isInitialized])
 
     const {
         data: id,
@@ -150,15 +158,62 @@ export default function useTransactions() {
         [writeContractsAsync, walletsReady, wallets],
     )
 
+    const setTransactionInProgress = useAppStore(s => s.setTransactionInProgress)
+    const [currentTransactionIndex, setCurrentTransactionIndex] = useState(0)
+    const [totalTransactions, setTotalTransactions] = useState(0)
+
+    const publicClient = getPublicClient(getConfig())
+
     const executeEoaTransactions = async (contractCalls: ContractCall[]) => {
-        console.log('🔄 [useTransactions] Executing EOA transaction')
+        console.log('🔄 [useTransactions] Executing EOA transactions:', contractCalls.length)
+        setTotalTransactions(contractCalls.length)
+        setCurrentTransactionIndex(0)
+        setTransactionInProgress(true)
 
         try {
-            setResult(prev => ({ ...prev, isLoading: true, isError: false, error: null }))
+            for (const [index, call] of contractCalls.entries()) {
+                setCurrentTransactionIndex(index)
 
-            console.log('📝 [useTransactions] Submitting EOA transaction')
-            const result = await writeContractAsync(contractCalls[0])
-            console.log('✅ [useTransactions] EOA transaction submitted', result)
+                console.log(`📝 [useTransactions] Submitting EOA transaction ${index + 1}/${contractCalls.length}`)
+
+                const hash = await writeContractAsync(call)
+
+                // Update result with current transaction hash
+                setResult(prev => ({ ...prev, isLoading: true, isError: false, error: null, hash }))
+
+                // Wait for transaction confirmation before proceeding
+                console.log(`⏳ [useTransactions] Waiting for confirmation of tx ${index + 1}`)
+                const receipt = await waitForTransactionReceipt(publicClient as PublicClient, {
+                    hash,
+                    confirmations: 1,
+                    onReplaced: replacement => {
+                        console.log('🔄 [useTransactions] Transaction replaced:', {
+                            reason: replacement.reason,
+                            oldHash: hash,
+                            newHash: replacement.transaction.hash,
+                        })
+                        // Update hash if transaction was replaced
+                        setResult(prev => ({
+                            ...prev,
+                            hash: replacement.transaction.hash,
+                        }))
+                    },
+                })
+
+                console.log(`✅ [useTransactions] EOA transaction ${index + 1} confirmed:`, {
+                    hash: receipt.transactionHash,
+                    blockNumber: receipt.blockNumber,
+                    gasUsed: receipt.gasUsed.toString(),
+                })
+
+                // Update result with confirmed receipt
+                setResult(prev => ({ ...prev, receipt }))
+
+                // If this was the last transaction, mark as confirmed
+                if (index === contractCalls.length - 1) {
+                    setIsConfirmed(true)
+                }
+            }
         } catch (error) {
             console.error('❌ [useTransactions] EOA transaction error:', error)
             setResult(prev => ({
@@ -167,6 +222,10 @@ export default function useTransactions() {
                 error: error as Error,
             }))
             throw error
+        } finally {
+            setTransactionInProgress(false)
+            setCurrentTransactionIndex(0)
+            setResult(prev => ({ ...prev, isLoading: false }))
         }
     }
 
@@ -174,30 +233,14 @@ export default function useTransactions() {
 
     const executeTransactions = useCallback(
         async (contractCalls: ContractCall[], config: TransactionConfig) => {
-            console.log('🔄 [useTransactions] Executing transactions:', {
-                calls: contractCalls,
-                type: config.type,
-                walletsReady,
-                walletConnected: Boolean(wallets[0]),
-                walletType: wallets[0]?.connectorType,
-            })
-
-            if (transactionInProgressRef.current) {
-                console.log('⚠️ [useTransactions] Transaction already in progress, skipping')
-                return
-            }
-
-            if (!walletsReady || !wallets[0]) {
+            if (walletsReady && !Boolean(wallets[0])) {
                 console.error('❌ [useTransactions] Wallet not ready or not connected')
                 throw new Error('Wallet not ready or not connected')
             }
-
             try {
                 setCurrentTransaction(config)
                 transactionInProgressRef.current = true
-
-                // Esperar un momento para asegurar que el conector esté listo
-                await new Promise(resolve => setTimeout(resolve, 500))
+                setTransactionInProgress(true)
 
                 const walletType = wallets[0]?.connectorType
                 console.log('🔍 [useTransactions] Using wallet type:', walletType)
@@ -209,13 +252,88 @@ export default function useTransactions() {
                 }
             } catch (error) {
                 console.error('❌ [useTransactions] Transaction execution failed:', error)
+
+                if (error instanceof ConnectorNotConnectedError) {
+                    console.log('🔌 [useTransactions] Connector not connected, suggesting refresh')
+                    toast.error('Wallet connection lost. Please refresh the page to reconnect.', {
+                        action: {
+                            label: 'Refresh',
+                            onClick: () => window.location.reload(),
+                        },
+                        duration: 5000,
+                    })
+                }
+
                 throw error
             } finally {
-                transactionInProgressRef.current = false
+                setTimeout(() => {
+                    transactionInProgressRef.current = false
+                    setTransactionInProgress(false)
+                    setCurrentTransaction(null)
+                }, 500)
             }
         },
         [walletsReady, wallets, executeCoinbaseTransactions, executeEoaTransactions],
     )
+
+    // Add reset function
+    const reset = useCallback(() => {
+        setResult({
+            hash: null,
+            receipt: null,
+            isLoading: false,
+            isError: false,
+            error: null,
+        })
+        setIsConfirmed(false)
+        setCurrentTransaction(null)
+        transactionInProgressRef.current = false
+        setTransactionInProgress(false)
+    }, [setTransactionInProgress])
+
+    // Add cleanup effect
+    useEffect(() => {
+        return () => {
+            reset()
+        }
+    }, [reset])
+
+    // Add this effect to handle cleanup on unmount or when transaction completes
+    useEffect(() => {
+        const cleanup = () => {
+            setTransactionInProgress(false)
+            transactionInProgressRef.current = false
+            setCurrentTransaction(null)
+        }
+
+        if (isConfirmed) {
+            // Dar tiempo para que los toasts de éxito se muestren
+            setTimeout(cleanup, 3000)
+        }
+
+        return cleanup
+    }, [isConfirmed, setTransactionInProgress])
+
+    useEffect(() => {
+        console.log('👀 [useTransactions] Effect: Transaction status changed', {
+            isConfirmed,
+            transactionInProgressRef: transactionInProgressRef.current,
+        })
+
+        const cleanup = () => {
+            console.log('🧹 [useTransactions] Cleanup triggered')
+            setTransactionInProgress(false)
+            transactionInProgressRef.current = false
+            setCurrentTransaction(null)
+        }
+
+        if (isConfirmed) {
+            console.log('✅ [useTransactions] Transaction confirmed, scheduling cleanup')
+            setTimeout(cleanup, 3000)
+        }
+
+        return cleanup
+    }, [isConfirmed])
 
     return {
         executeTransactions,
@@ -230,5 +348,7 @@ export default function useTransactions() {
             callsStatus,
             transactionType: currentTransaction?.type,
         },
+        currentTransactionIndex,
+        totalTransactions,
     }
 }
