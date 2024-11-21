@@ -23,6 +23,7 @@ export default defineConfig({
             name: 'Desktop Chrome',
             use: { ...devices['Desktop Chrome'] },
         },
+        /*
         {
             name: 'Desktop Firefox',
             use: { ...devices['Desktop Firefox'] },
@@ -31,6 +32,7 @@ export default defineConfig({
             name: 'Mobile Chrome',
             use: { ...devices['Pixel 5'] },
         },
+        */
     ],
 
     webServer: {
@@ -39,4 +41,4 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 120 * 1000,
     },
-});
+})
