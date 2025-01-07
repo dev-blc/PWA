@@ -1,12 +1,17 @@
 #!/bin/bash
 
+# Kill any existing anvil process
+pkill anvil
+
+# Esperar un momento para asegurar que el puerto esté libre
+sleep 1
+
 anvil &
 ANVIL_PID=$!
 echo $ANVIL_PID
-<<<<<<< HEAD
 
 cd ./contracts
-forge script ./script/e2e.s.sol --rpc-url http://localhost:8545 --broadcast
+forge script script/e2e.s.sol:E2EScript --rpc-url http://localhost:8545 --broadcast
 export NEXT_PUBLIC_NETWORK=local
 cd ../
 
