@@ -1,6 +1,8 @@
 import PageWrapper from '@/components/page-wrapper'
 import AmountSection from './_components/amount-section'
-import ProfileBalanceSection from './_components/balance-section'
+import ProfileBalanceSection from './_components/wallet-account-section'
+import CrossSwapSection from './_components/cross-swap-section'
+import WalletAccountSection from './_components/wallet-account-section'
 
 export default function ProfileLayout() {
     return (
@@ -10,9 +12,9 @@ export default function ProfileLayout() {
                 title: 'swap',
             }}>
             <div className='flex flex-1 flex-col gap-3'>
-                Sample rtext here
-                <ProfileBalanceSection />
-                <AmountSection />
+                <WalletAccountSection/>
+                <CrossSwapSection/>
+
             </div>
         </PageWrapper>
     )

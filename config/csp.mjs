@@ -56,7 +56,7 @@ export const getCspDirectives = () => ({
 
     // Form/Frame controls
     'form-action': ["'self'"],
-    'frame-src': ["'self'", 'https://app.privy.io', 'https://auth.privy.io', 'https://js.stripe.com'],
+    'frame-src': ["'self'", 'https://app.privy.io', 'https://auth.privy.io', 'https://js.stripe.com', 'https://www.okx.com/'],
 
     // Other
     'upgrade-insecure-requests': [],
