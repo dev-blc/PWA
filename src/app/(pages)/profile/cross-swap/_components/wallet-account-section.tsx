@@ -10,7 +10,7 @@ import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
 
 export default function WalletAccountSection() {
     const { wallets } = useWallets()
-
+    console.log(wallets)
     const address = wallets?.[0]?.address;
     return (
         <Container>
