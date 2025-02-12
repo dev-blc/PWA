@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from 'react'
 import { Button } from '@/app/_components/ui/button'
 import { poolAbi } from '@/types/contracts'
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
@@ -28,6 +29,7 @@ type PoolStatusConfig = {
 }
 
 interface BottomBarHandlerProps {
+    onPoolUpdate: () => void
     isAdmin: boolean
     poolStatus: POOLSTATUS
     poolId: string
@@ -39,6 +41,7 @@ interface BottomBarHandlerProps {
 }
 
 export default function BottomBarHandler({
+    onPoolUpdate,
     isAdmin,
     poolStatus,
     poolId,
@@ -48,7 +51,7 @@ export default function BottomBarHandler({
     requiredAcceptance,
     termsUrl,
 }: BottomBarHandlerProps) {
-    // console.log('🔄 [BottomBarHandler] Rendering with:', { poolId, poolStatus, isAdmin })
+    //console.log('🔄 [BottomBarHandler] Rendering with:', { poolId, poolStatus, isAdmin })
 
     const [isLoading, setIsLoading] = useState(false)
     const [transactionProcessed, setTransactionProcessed] = useState(false)
@@ -175,6 +178,7 @@ export default function BottomBarHandler({
             handleStartPool,
             handleJoinPool,
             handleEndPool,
+            isParticipant,
             localIsParticipant,
             handleViewTicket,
             handleJoinPoolWithTerms,
@@ -187,7 +191,7 @@ export default function BottomBarHandler({
             return (
                 <Button
                     key={key}
-                    className='mb-3 h-[46px] w-full rounded-[2rem] bg-cta px-4 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
+                    className='active:bg-cta-active mb-3 h-[46px] w-full rounded-[2rem] bg-cta px-4 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
                     onClick={() => {
                         setIsLoading(true)
                         config.action()
@@ -260,6 +264,13 @@ export default function BottomBarHandler({
             setLocalIsParticipant(isParticipant)
         }
     }, [isParticipant, isParticipantLoading])
+
+    useEffect(() => {
+        if (!isParticipantLoading && isParticipant) {
+            onPoolUpdate()
+            setBottomBarContent(renderButton({ label: 'View My Ticket', action: handleViewTicket }, 'view-ticket'))
+        }
+    }, [isParticipant])
 
     useEffect(() => {
         // console.log('✨ [BottomBarHandler] Confirmation status:', {

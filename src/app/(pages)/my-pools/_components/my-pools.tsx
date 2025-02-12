@@ -1,14 +1,12 @@
 'use client'
 
-import { Button } from '@/app/_components/ui/button'
-import Link from 'next/link'
+import * as React from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
 import MyPoolsTabs from './my-pools.tabs'
 import type { MyPoolsTab } from './my-pools.tabs.config'
-import { Route } from 'next'
 import { useAppStore } from '@/app/_client/providers/app-store.provider'
-import { PoolItem } from '@/app/_lib/entities/models/pool-item'
+import type { PoolItem } from '@/app/_lib/entities/models/pool-item'
 import { useServerActionQuery } from '@/app/_client/hooks/server-action-hooks'
 import { getUserPastPoolsAction, getUserUpcomingPoolsAction } from '../actions'
 
@@ -38,10 +36,10 @@ const MyPools: React.FC<MyPoolsProps> = ({ initialUpcomingPools, initialPastPool
     })
 
     useEffect(() => {
-        const tabFromUrl = searchParams?.get('tab') as 'upcoming' | 'past'
+        const tabFromUrl = searchParams?.get('tab') as 'active' | 'past'
 
         if (initialLoadRef.current) {
-            if (tabFromUrl && ['upcoming', 'past'].includes(tabFromUrl)) {
+            if (tabFromUrl && ['active', 'past'].includes(tabFromUrl)) {
                 setMyPoolsTab(tabFromUrl)
             } else {
                 updateSearchParam(myPoolsTab)
