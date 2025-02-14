@@ -234,12 +234,22 @@
     padding-bottom: env(safe-area-inset-bottom);
 }
 
+.camera-box {
+    opacity: 1;
+    box-shadow: 0 0 0 100pc rgba(0, 0, 0, 0.2);
+}
+
+.camera-scanned-overlay {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(7.5px);
+}
 @layer base {
-  * {
-    @apply border-border;
+    * {
+        @apply border-border;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
 }
 
