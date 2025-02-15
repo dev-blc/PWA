@@ -16,16 +16,16 @@ import { useWriteContract } from 'wagmi'
 import { usePoolDetails } from '../../ticket/_components/use-pool-details'
 import { useUserDetails } from '../_components/use-user-details'
 import PayoutForm from './_components/payout-form'
+import { useParams } from 'next/navigation'
 
-type Props = {
-    params: {
-        'pool-id': string
-        'participant-id': Address
-    }
+type Params = {
+    'participant-id': Address
+    'pool-id': string
 }
 
-const ParticipantPayout = ({ params }: Props) => {
-    const { 'participant-id': participantId, 'pool-id': poolId } = params
+const ParticipantPayout = async () => {
+    const { 'participant-id': participantId, 'pool-id': poolId } = useParams<Params>()
+
     const { data: userDetails } = useUserDetails(participantId)
     const { poolDetails } = usePoolDetails(poolId)
     const { data: participantsData } = useParticipants(poolId)
@@ -57,9 +57,9 @@ const ParticipantPayout = ({ params }: Props) => {
 
     const avatar = userDetails?.avatar ?? blo(participantId)
     const displayName = userDetails?.displayName ?? formatAddress(participantId)
-    const { data: participants, isLoading, error } = useParticipants(params?.['pool-id'])
+    const { data: participants, isLoading, error } = useParticipants(poolId)
 
-    const currentParticipant = participants?.find(participant => participant.address === params['participant-id'])
+    const currentParticipant = participants?.find(participant => participant.address === participantId)
     const isCheckedIn = currentParticipant?.checkedInAt != null
 
     if (isAdminLoading) {
@@ -103,11 +103,7 @@ const ParticipantPayout = ({ params }: Props) => {
                             <p className='text-[#B2B2B2]'>Registered</p>
                         )}
                     </div>
-                    <PayoutForm
-                        poolId={params['pool-id']}
-                        participantId={params['participant-id']}
-                        tokenAddress={tokenAddress}
-                    />
+                    <PayoutForm poolId={poolId} participantId={participantId} tokenAddress={tokenAddress} />
                 </div>
             </div>
         </PageWrapper>

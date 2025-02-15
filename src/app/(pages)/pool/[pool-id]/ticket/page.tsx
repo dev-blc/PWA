@@ -4,8 +4,15 @@ import QRCode from 'react-qr-code'
 import { usePoolDetails } from './_components/use-pool-details'
 import PageWrapper from '@/components/page-wrapper'
 import { useUserInfo } from '@/hooks/use-user-info'
+import { useParams } from 'next/navigation'
 
-const TicketPage = ({ params: { 'pool-id': poolId } }: { params: { 'pool-id': string } }) => {
+type Params = {
+    'pool-id': string
+}
+
+const TicketPage = () => {
+    const { 'pool-id': poolId } = useParams<Params>()
+
     const { poolDetails } = usePoolDetails(poolId)
     const { data: user } = useUserInfo()
     const address = user?.address

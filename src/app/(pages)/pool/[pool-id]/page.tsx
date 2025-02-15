@@ -6,11 +6,12 @@ import { getUserAdminStatusActionWithCookie } from '@/features/users/actions'
 import PageWrapper from '@/components/page-wrapper'
 
 type Props = {
-    params: { 'pool-id': string }
+    params: Promise<{ 'pool-id': string }>
 }
 
-export default function PoolDetailsPage({ params: { 'pool-id': poolId } }: Props) {
+export default async function PoolDetailsPage({ params }: Props) {
     const queryClient = new QueryClient()
+    const { 'pool-id': poolId } = await params
 
     queryClient.prefetchQuery({
         queryKey: ['pool-details', poolId],

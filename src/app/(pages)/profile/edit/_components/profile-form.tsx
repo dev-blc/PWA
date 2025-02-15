@@ -4,7 +4,7 @@ import { Button } from '@/app/_components/ui/button'
 import { Label } from '@/app/_components/ui/label'
 import { useRouter } from 'next/navigation'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { toast } from 'sonner'
 import { Tables } from '@/types/db'
 import { useAppStore } from '@/app/_client/providers/app-store.provider'
@@ -58,7 +58,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
     }))
     const [avatarChanged, setAvatarChanged] = useState(false)
 
-    const [state, formAction] = useFormState(validateProfileAction, initialState)
+    const [state, formAction] = useActionState(validateProfileAction, initialState)
 
     useEffect(() => {
         if (!isRouting) {

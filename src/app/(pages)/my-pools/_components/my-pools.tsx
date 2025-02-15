@@ -15,7 +15,7 @@ interface MyPoolsProps {
     initialPastPools: PoolItem[] | null
 }
 
-const MyPools: React.FC<MyPoolsProps> = ({ initialUpcomingPools, initialPastPools }): JSX.Element => {
+const MyPools: React.FC<MyPoolsProps> = ({ initialUpcomingPools, initialPastPools }): React.JSX.Element => {
     const searchParams = useSearchParams()
     const { myPoolsTab, setMyPoolsTab } = useAppStore(state => ({
         myPoolsTab: state.myPoolsTab,
