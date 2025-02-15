@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Hash } from 'viem'
 import { parseEventLogs, ContractFunctionExecutionError, parseUnits } from 'viem'
@@ -29,7 +29,7 @@ const initialState = {
 }
 
 export function useCreatePool() {
-    const [state, formAction] = useFormState(createPoolAction, initialState)
+    const [state, formAction] = useActionState(createPoolAction, initialState)
     const router = useRouter()
     const { executeTransactions, result: txResult } = useTransactions()
     const { setStep, setOnChainPoolId, setError, showToast } = usePoolCreationStore(state => ({

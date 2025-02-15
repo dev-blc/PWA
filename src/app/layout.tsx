@@ -8,10 +8,13 @@ import { headers } from 'next/headers'
 
 export { metadata, viewport } from './_lib/utils/metadata'
 
+export const fetchCache = 'default-cache'
+
 type Props = React.PropsWithChildren<LayoutWithSlots<'topbar' | 'bottombar' | 'modal' | 'transactionprogressmodal'>>
 
-export default function RootLayout({ children, bottombar, modal, transactionprogressmodal }: Props) {
-    const wagmiCookie = headers().get('cookie')
+export default async function RootLayout({ children, bottombar, modal, transactionprogressmodal }: Props) {
+    const headersList = await headers()
+    const wagmiCookie = headersList.get('cookie')
 
     return (
         <html lang='en' className={inter.variable}>

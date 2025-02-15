@@ -16,6 +16,9 @@ const config = {
     serwist: withSerwist,
     compiler: compilerConfig,
     experimental: experimentalConfig,
+
+    bundlePagesRouterDependencies: true,
+    serverExternalPackages: ['@serwist/next'],
 }
 
 export default config
