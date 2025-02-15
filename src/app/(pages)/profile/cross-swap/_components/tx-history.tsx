@@ -128,7 +128,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
                 />
                 <SheetHeader className='flex flex-row items-center justify-between pt-4'>
                     <SheetTitle className='text-[18px] font-bold'>Transaction History</SheetTitle>
-                    <button onClick={onClose} className='absolute right-6 top-4 text-gray-500 hover:text-gray-700'>
+                        className='absolute right-6 top-4 text-gray-500 hover:text-gray-700'>
                         <X className='size-6' />
                     </button>
                 </SheetHeader>
@@ -143,22 +143,22 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
                                 <div className='flex'>
                                     <div className='flex items-center'>
                                         <div className='relative flex'>
-                                            <div className='h-6 w-6 overflow-hidden rounded-full'>
+                                            <div className='size-6 overflow-hidden rounded-full'>
                                                 <Image
                                                     src={transaction.fromToken.logo}
                                                     alt={transaction.fromToken.name}
                                                     width={24}
                                                     height={24}
-                                                    className='h-full w-full object-cover'
+                                                    className='size-full object-cover'
                                                 />
                                             </div>
-                                            <div className='-ml-2 h-6 w-6 overflow-hidden rounded-full'>
+                                            <div className='-ml-2 size-6 overflow-hidden rounded-full'>
                                                 <Image
                                                     src={transaction.toToken.logo}
                                                     alt={transaction.toToken.name}
                                                     width={24}
                                                     height={24}
-                                                    className='h-full w-full object-cover'
+                                                    className='size-full object-cover'
                                                 />
                                             </div>
                                         </div>
@@ -181,7 +181,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
                                         <span className='mb-1 text-[12px] text-[#FF9900]'>In progress</span>
                                         <div className='flex items-center'>
                                             <span className='text-[14px] font-medium text-[#8F8F8F]'>21 min</span>
-                                            <ChevronRight className='ml-2 h-4 w-4 text-[#8F8F8F]' />
+                                            <ChevronRight className='ml-2 size-4 text-[#8F8F8F]' />
                                         </div>
                                     </div>
                                 ) : (
@@ -195,7 +195,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
                                                     -{transaction.amount} {transaction.fromToken.name}
                                                 </span>
                                             </div>
-                                            <ChevronRight className='ml-2 h-4 w-4 text-[#8F8F8F]' />
+                                            <ChevronRight className='ml-2 size-4 text-[#8F8F8F]' />
                                         </div>
                                     </div>
                                 )}

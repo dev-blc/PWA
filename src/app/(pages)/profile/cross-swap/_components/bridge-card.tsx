@@ -56,7 +56,7 @@ export function BridgeInfoCard({ bridgeInfo }: BridgeInfoProps) {
                 {/* Slippage */}
                 <div className='flex items-center justify-between'>
                     <span className='flex items-center gap-1 text-sm text-muted-foreground'>
-                        Slippage <Info className='h-4 w-4' />
+                        Slippage <Info className='size-4' />
                     </span>
                     <span className='text-sm'>{bridgeInfo.slippage}</span>
                 </div>
