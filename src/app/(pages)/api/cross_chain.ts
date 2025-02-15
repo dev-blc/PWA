@@ -1,11 +1,8 @@
 import 'server-only'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { API_paths, sendGetRequest } from `../profile/cross-swap/_components/utils.ts`
-export default async function handler(_req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== "GET") {
-        return res.status(405).json({ error: "Method not allowed" });
-      }
+import { API_paths, sendGetRequest } from '../profile/cross-swap/_components/utils'
+
 
       try {
         const { address } = req.query;

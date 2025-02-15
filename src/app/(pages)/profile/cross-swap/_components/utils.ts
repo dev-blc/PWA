@@ -3,11 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
-import https from 'https';
-import crypto from 'crypto';
-import querystring from 'querystring';
+import https from 'https'
+import crypto from 'crypto'
+import querystring from 'querystring'
 import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js'
-
 
 // OKX API configuration
 const api_config = {

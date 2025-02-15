@@ -3,7 +3,7 @@
 import { Button } from '@/app/_components/ui/button'
 import { Label } from '@/app/_components/ui/label'
 import { useRouter } from 'next/navigation'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useActionState } from 'react'
 import { toast } from 'sonner'
 import { Tables } from '@/types/db'

@@ -1,15 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client'
-import { use } from 'chai'
-import { numberToHex } from 'viem'
+
+import type { BridgeInfo } from './utils'
 import {
     API_paths,
     checkApprovalStatus,
     sendGetRequest,
-    sendPostRequest,
     toDecimals,
     toWholeNumber,
     USDC_BASE,
@@ -26,24 +21,12 @@ import { useWallets } from '@privy-io/react-auth'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/app/_components/ui/button'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuPortal,
-    DropdownMenuTrigger,
-    DropdownMenuItem,
-} from '@/app/_components/ui/dropdown-menu'
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/_components/ui/select'
-import { useSendTransaction } from '@privy-io/react-auth'
-import { decodeFunctionData, encodeFunctionData, toHex } from 'viem'
-
+import { toHex } from 'viem'
 import * as React from 'react'
 import Image from 'next/image'
 import { ChevronDown, Search, X } from 'lucide-react'
-import { chain, get, set, toNumber } from 'lodash'
+import { toNumber } from 'lodash'
 import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/_components/ui/dialog'
 import { Input } from '@/app/_components/ui/input'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { hash } from 'crypto'

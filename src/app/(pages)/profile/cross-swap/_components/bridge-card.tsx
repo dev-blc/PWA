@@ -1,6 +1,5 @@
 import { Info } from 'lucide-react'
 import { Card, CardContent } from '@/app/_components/ui/card'
-import { Button } from '@/app/_components/ui/button'
 
 interface BridgeInfoProps {
     bridgeInfo: {

@@ -45,7 +45,6 @@ export function useCreatePool() {
         hash: txResult.hash as Hash | undefined,
     })
     const isCreatingPool = useRef(false)
-    const isPoolUpdated = useRef(false)
     const queryClient = useQueryClient()
     const [showCancelDialog, setShowCancelDialog] = useState(false)
     const [showRetryDialog, setShowRetryDialog] = useState(false)
