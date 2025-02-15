@@ -1,11 +1,9 @@
 import { getDbUser } from '@/app/_server/persistence/users/db/get-db-user'
 import ProfileForm from './_components/profile-form'
-import { privy, verifyToken } from '@/app/_server/auth/privy'
+import { verifyToken } from '@/app/_server/auth/privy'
 import { Tables } from '@/types/db'
-import { Metadata } from 'next'
 import PageWrapper from '@/components/page-wrapper'
 import SkipButton from '@/components/skip-button'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 type UserInfo = Pick<Tables<'users'>, 'avatar' | 'displayName'> | null

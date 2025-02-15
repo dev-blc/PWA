@@ -3,13 +3,8 @@
 import * as React from 'react'
 import { ChevronRight, X } from 'lucide-react'
 import { format } from 'date-fns'
-
-import { Card, CardContent } from '@/app/_components/ui/card'
-import { Button } from '@/app/_components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
-import { fetchStatus, tokenAddressToName } from './utils'
-import { useState, useEffect, useRef } from 'react'
-import { String } from 'lodash'
+import { useRef } from 'react'
 import Image from 'next/image'
 
 interface Transaction {

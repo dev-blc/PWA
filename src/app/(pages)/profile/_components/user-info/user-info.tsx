@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarImage } from '@/app/_components/ui/avatar'
 import { ExternalLinkIcon, History } from 'lucide-react'
-import Link from 'next/link'
 import { Skeleton } from '@/app/_components/ui/skeleton'
 import { blo } from 'blo'
 import { useUserInfo } from '@/hooks/use-user-info'
