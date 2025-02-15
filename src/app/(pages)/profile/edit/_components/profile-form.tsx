@@ -66,7 +66,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
                 <Button
                     type='submit'
                     form='profile-form'
-                    className='mb-3 h-[46px] w-full rounded-[2rem] bg-cta px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
+                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                     Save
                 </Button>,
             )
@@ -121,7 +121,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
                 return (
                     <section key={field.key} className='mb-6 flex flex-1 flex-col'>
                         <Label className='text-base font-medium text-[#090909]'>{field.label}</Label>
-                        <p className='mb-4 mt-1.5 text-xs font-medium text-[#b2b2b2]'>{field.description}</p>
+                        <p className='mt-1.5 mb-4 text-xs font-medium text-[#b2b2b2]'>{field.description}</p>
                         <field.component name={field.name} defaultValue={defaultValue} onChange={handleChange} />
                         {errors && errors.length > 0 && (
                             <p className='mt-1 text-xs text-red-500'>{errors.join(', ')}</p>

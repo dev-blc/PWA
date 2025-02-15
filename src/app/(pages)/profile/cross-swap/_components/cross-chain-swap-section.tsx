@@ -8,7 +8,6 @@ import {
     toDecimals,
     toWholeNumber,
     USDC_BASE,
-    BridgeInfo,
     formatTime,
     fetchStatus,
     getOKXAccount,
@@ -568,7 +567,7 @@ const CrossChainSwapSection = () => {
                             transition: 'transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
                         }}>
                         <div
-                            className='absolute left-1/2 top-2.5 h-1.5 w-12 -translate-x-1/2 cursor-grab touch-none rounded-full bg-gray-300 active:cursor-grabbing'
+                            className='absolute top-2.5 left-1/2 h-1.5 w-12 -translate-x-1/2 cursor-grab touch-none rounded-full bg-gray-300 active:cursor-grabbing'
                             onPointerDown={handleDragStart}
                             onPointerMove={handleDrag}
                             onPointerUp={handleDragEnd}
@@ -580,13 +579,13 @@ const CrossChainSwapSection = () => {
                             <SheetTitle className='text-[18px] font-bold'>Select bridge token</SheetTitle>
                             <button
                                 onClick={() => setIsSelectOpen(false)}
-                                className='absolute right-6 top-4 text-gray-500 hover:text-gray-700'>
+                                className='absolute top-4 right-6 text-gray-500 hover:text-gray-700'>
                                 <X className='size-6' />
                             </button>
                         </SheetHeader>
                         <div className='mt-6'>
                             <div className='relative flex h-[42px] items-center'>
-                                <Search className='absolute left-3 z-10 h-5 w-5 text-gray-400' />
+                                <Search className='absolute left-3 z-10 size-5 text-gray-400' />
                                 <Input
                                     placeholder='Search'
                                     className='h-[42px] w-full rounded-full border-gray-200 pl-10'
@@ -666,10 +665,10 @@ const CrossChainSwapSection = () => {
                                                         alt={network.chainName}
                                                         width={24}
                                                         height={24}
-                                                        className='h-6 w-6'
+                                                        className='size-6'
                                                     />
                                                 ) : (
-                                                    <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-sm font-medium'>
+                                                    <div className='flex size-6 items-center justify-center rounded-full bg-gray-100 text-sm font-medium'>
                                                         {network.chainName?.[0] || '?'}
                                                     </div>
                                                 )}
@@ -693,13 +692,13 @@ const CrossChainSwapSection = () => {
                                         }}
                                         className='flex w-full items-center justify-between rounded-2xl px-2 pt-4 transition-colors hover:bg-gray-50'>
                                         <div className='flex items-center gap-3'>
-                                            <div className='h-9 w-9 overflow-hidden rounded-full bg-gray-100'>
+                                            <div className='size-9 overflow-hidden rounded-full bg-gray-100'>
                                                 <Image
                                                     src={token.tokenLogoUrl || '/placeholder.svg'}
                                                     alt={token.tokenName}
                                                     width={36}
                                                     height={36}
-                                                    className='h-full w-full object-cover'
+                                                    className='size-full object-cover'
                                                 />
                                             </div>
                                             <div className='flex flex-col items-start'>
@@ -769,10 +768,10 @@ const CrossChainSwapSection = () => {
                                                 alt={fromNetwork.chainName}
                                                 width={16}
                                                 height={16}
-                                                className='h-4 w-4'
+                                                className='size-4'
                                             />
                                         ) : (
-                                            <div className='h-4 w-4 rounded-full bg-[#d9d9d9]'>
+                                            <div className='size-4 rounded-full bg-[#d9d9d9]'>
                                                 {fromNetwork.chainName?.[0] || '?'}
                                             </div>
                                         )
@@ -787,17 +786,17 @@ const CrossChainSwapSection = () => {
                         </div>
                         <div className='flex items-center justify-between'>
                             <button onClick={() => setIsSelectOpen(true)} className='flex items-center gap-2'>
-                                <div className='h-8 w-8 overflow-hidden rounded-xl bg-[#d9d9d9]'>
+                                <div className='size-8 overflow-hidden rounded-xl bg-[#d9d9d9]'>
                                     <Image
                                         src={fromToken.tokenLogoUrl || '/placeholder.svg'}
                                         alt={fromToken.tokenName}
                                         width={32}
                                         height={32}
-                                        className='h-full w-full object-cover'
+                                        className='size-full object-cover'
                                     />
                                 </div>
                                 <span className='text-xl font-bold'>{fromToken.tokenSymbol}</span>
-                                <ChevronDown className='ml-1 h-5 w-5 text-[#8f8f8f]' />
+                                <ChevronDown className='ml-1 size-5 text-[#8f8f8f]' />
                             </button>
                             <input
                                 type='number'
@@ -826,7 +825,7 @@ const CrossChainSwapSection = () => {
                             <div className='flex items-center gap-2'>
                                 <span className='text-sm text-[#8f8f8f]'>To</span>
                                 <div className='flex items-center gap-1 text-[#383838]'>
-                                    <Image src='/Subtract.svg' alt='Base' width={16} height={16} className='h-4 w-4' />
+                                    <Image src='/Subtract.svg' alt='Base' width={16} height={16} className='size-4' />
                                     <span className='text-sm'>BASE - Pool Wallet</span>
                                 </div>
                             </div>
@@ -834,13 +833,13 @@ const CrossChainSwapSection = () => {
                         </div>
                         <div className='flex items-center justify-between'>
                             <div className='flex items-center gap-2'>
-                                <div className='h-8 w-8 overflow-hidden rounded-xl'>
+                                <div className='size-8 overflow-hidden rounded-xl'>
                                     <Image
                                         src={USDC_BASE[1].tokenLogoUrl || '/placeholder.svg'}
                                         alt='USDC'
                                         width={32}
                                         height={32}
-                                        className='h-full w-full object-cover'
+                                        className='size-full object-cover'
                                     />
                                 </div>
                                 <span className='text-xl font-bold'>USDC</span>
@@ -860,11 +859,11 @@ const CrossChainSwapSection = () => {
             </div>
 
             {/* Fixed Button at Bottom */}
-            <div className='fixed bottom-0 left-0 right-0 bg-white p-4'>
+            <div className='fixed inset-x-0 bottom-0 bg-white p-4'>
                 <div className='mx-auto max-w-md'>
                     <button
                         onClick={ifApproved ? handleSwap : handleApproveBridge}
-                        className='h-[46px] w-full rounded-[2rem] bg-cta px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
+                        className='bg-cta shadow-button active:shadow-button-push h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                         {ifApproved ? 'Bridge' : 'Approve'}
                     </button>
                     <TransactionHistory

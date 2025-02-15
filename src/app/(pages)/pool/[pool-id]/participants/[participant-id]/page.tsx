@@ -81,11 +81,11 @@ const ParticipantPayout = async () => {
                                 <AvatarFallback className='bg-[#d9d9d9]' />
                             </Avatar>
                             {amountClaimed > 0 ? (
-                                <span className='absolute left-0 top-0 z-50 size-[20px] rounded-full bg-white'>
+                                <span className='absolute top-0 left-0 z-50 size-[20px] rounded-full bg-white'>
                                     <Image src={circleTickIcon} alt='paid' width={20} height={20} />
                                 </span>
                             ) : amountWon > 0 ? (
-                                <span className='absolute left-0 top-0 z-50 size-[20px] rounded-full bg-[#5572E9]'></span>
+                                <span className='absolute top-0 left-0 z-50 size-[20px] rounded-full bg-[#5572E9]'></span>
                             ) : (
                                 <></>
                             )}
