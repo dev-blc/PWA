@@ -24,12 +24,14 @@ export default function ClaimablePrizesList() {
     const { data: user } = useUserInfo()
     const { startConfetti } = useConfetti()
 
-    const poolIdsToClaimFrom = claimablePools?.[0] || []
+    const poolIdsToClaimFrom = useMemo(() => {
+        return claimablePools?.[0] || []
+    }, [claimablePools])
 
-    const onClaimFromPoolsButtonClicked = () => {
+    const onClaimFromPoolsButtonClicked = useCallback(() => {
         if (!claimablePools || poolIdsToClaimFrom.length === 0) return
 
-        const userAddress = user?.address as Address | undefined
+        const userAddress = user?.address
         if (!userAddress) return
 
         const walletAddresses = poolIdsToClaimFrom.map(() => userAddress)
@@ -55,8 +57,10 @@ export default function ClaimablePrizesList() {
                     startConfetti()
                 },
             },
-        )
-    }
+        ).catch(error => {
+            console.log('claimWinnings Error', error)
+        })
+    }, [claimablePools, poolIdsToClaimFrom, user?.address, executeTransactions, startConfetti])
 
     useEffect(() => {
         if (!claimablePools || poolIdsToClaimFrom?.length === 0) {
@@ -66,7 +70,7 @@ export default function ClaimablePrizesList() {
                 appActions.setBottomBarContent(
                     <Button
                         onClick={() => void onClaimFromPoolsButtonClicked()}
-                        className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
+                        className='btn-cta mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
                         <span>Claim</span>
                     </Button>,
                 )
@@ -75,7 +79,7 @@ export default function ClaimablePrizesList() {
         return () => {
             appActions.setBottomBarContent(null)
         }
-    }, [claimablePools, isRouting])
+    }, [claimablePools, isRouting, onClaimFromPoolsButtonClicked, poolIdsToClaimFrom?.length])
 
     if (isPending) {
         return (

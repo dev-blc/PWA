@@ -19,6 +19,7 @@ interface PoolDetailsClaimableWinningsProps {
     tokenSymbol: string
     poolId: string
 }
+
 export default function PoolDetailsClaimableWinnings({
     claimableAmount,
     tokenSymbol,
@@ -26,12 +27,23 @@ export default function PoolDetailsClaimableWinnings({
     description = 'First Place!',
     poolId,
 }: PoolDetailsClaimableWinningsProps) {
-    const { address } = useAccount() as { address: Address }
+    const { data: user } = useUserInfo()
+    const address = user?.address as Address
     const { executeTransactions } = useTransactions()
     const { startConfetti, ConfettiComponent } = useConfetti()
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleClaimWinnings = async () => {
+    const handleClaimWinnings = useCallback(async () => {
+        if (!address) {
+            toast.error('Please connect your wallet')
+            return
+        }
+
+        if (isLoading) return
+
+        setIsLoading(true)
         toast('Claiming winnings...')
+
         const ClaimWinningFunction = getAbiItem({
             abi: poolAbi,
             name: 'claimWinning',
@@ -55,10 +67,14 @@ export default function PoolDetailsClaimableWinnings({
                 },
             })
         } catch (error) {
-            console.log('claimWinning Error', error)
+            if (process.env.NODE_ENV === 'development') {
+                console.error('claimWinning Error:', error)
+            }
             toast.error('Failed to claim winnings')
+        } finally {
+            setIsLoading(false)
         }
-    }
+    }, [address, poolId, executeTransactions, startConfetti, isLoading])
 
     if (claimableAmount <= 0) return null
 
@@ -75,8 +91,9 @@ export default function PoolDetailsClaimableWinnings({
                 </div>
                 <Button
                     onClick={() => void handleClaimWinnings()}
+                    disabled={isLoading}
                     className='detail_card_claim_button h-9 w-full text-[0.625rem] text-white'>
-                    Claim winnings
+                    {isLoading ? 'Claiming...' : 'Claim winnings'}
                 </Button>
             </div>
         </>

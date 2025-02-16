@@ -47,19 +47,21 @@ const OnRampDialog = ({ open, setOpen, amount }: OnRampDialogProps) => {
 
     const { wallets } = useWallets()
     const { fundWallet } = useFundWallet()
-    const fundWithMoonpay = async () => {
+    const fundWithMoonpay = () => {
         const fundWalletConfig = {
             currencyCode: 'USDC_BASE' as MoonpayCurrencyCode, // Purchase ETH on Ethereum mainnet
             quoteCurrencyAmount: Number(amount ?? 10), // Purchase 0.05 ETH
             paymentMethod: 'credit_debit_card' as MoonpayPaymentMethod, // Purchase with credit or debit card
             uiConfig: { accentColor: '#696FFD' }, // Styling preferences for MoonPay's UIs
         }
-        await fundWallet(wallets[0].address, { config: fundWalletConfig })
+        fundWallet(wallets[0].address, { config: fundWalletConfig }).catch(error => {
+            console.log('fundWallet Error', error)
+        })
     }
 
     return (
         <Drawer open={open} onOpenChange={setOpen}>
-            <Drawer.Trigger asChild></Drawer.Trigger>
+            <Drawer.Trigger asChild />
             <Drawer.Content className='bg-white'>
                 <Drawer.Header className='text-left'>
                     <Drawer.Title className='mb-6 text-xl'>
