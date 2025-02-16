@@ -1,11 +1,11 @@
 'use client'
 
-import { QrCode, EditIcon } from 'lucide-react'
+import { Button } from '@/app/_components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { EditIcon, QrCode } from 'lucide-react'
+import { motion } from 'motion/react'
 import { useParams, useRouter } from 'next/navigation'
 import ShareDialog from '../dialogs/share'
-import { Button } from '@/app/_components/ui/button'
-import { motion } from 'framer-motion'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 type BannerButtonProps = {
     onClick?: () => void
@@ -69,12 +69,17 @@ export default function PoolDetailsBannerButtons({ isAdmin }: PoolDetailsBannerB
     const visibleButtons = buttons.filter(button => !button.adminOnly || isAdmin)
 
     return (
-        <div className='absolute top-4 right-4 flex h-full flex-col gap-2'>
+        <div className='absolute right-4 top-4 flex h-full flex-col gap-2'>
             {visibleButtons.map((ButtonData, index) => (
                 <motion.div
                     key={index}
                     whileTap={{ scale: 0.95 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+                    transition={{
+                        type: 'spring',
+                        stiffness: 400,
+                        damping: 17,
+                        bounce: 0.2,
+                    }}>
                     <ButtonData.element {...ButtonData.props} />
                 </motion.div>
             ))}

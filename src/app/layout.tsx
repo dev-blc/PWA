@@ -1,4 +1,5 @@
 import { inter } from '@/lib/utils/fonts'
+import { LayoutGroup } from 'motion/react'
 import { headers } from 'next/headers'
 import { Providers } from './_client/providers'
 import MainWrapper from './_components/main-wrapper'
@@ -22,11 +23,13 @@ export default async function RootLayout({ children, bottombar, modal, transacti
             </head>
             <body className='flex min-h-dvh flex-col antialiased'>
                 <Providers cookie={wagmiCookie}>
-                    <MainWrapper>{children}</MainWrapper>
-                    {modal}
-                    {bottombar}
-                    {transactionprogressmodal}
-                    {/* <InstallPromptDrawer /> */}
+                    <LayoutGroup>
+                        <MainWrapper>{children}</MainWrapper>
+                        {modal}
+                        {bottombar}
+                        {transactionprogressmodal}
+                        {/* <InstallPromptDrawer /> */}
+                    </LayoutGroup>
                 </Providers>
             </body>
         </html>
