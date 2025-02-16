@@ -85,7 +85,7 @@ const EncryptText: React.FC<EncryptTextProps> = ({ children, balance, symbol = '
                         )}
 
                         {isEncoded && (
-                            <motion.div key='encoded' className='absolute blur-sm'>
+                            <motion.div key='encoded' className='blur-xs absolute'>
                                 {renderText('$')}
                                 {renderText(encodedText?.integer || '', 'inline-block text-4xl tabular-nums')}
                                 {renderText('.')}

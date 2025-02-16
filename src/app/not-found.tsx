@@ -101,7 +101,7 @@ export default function NotFound() {
                 </div>
                 <p className='mb-4 text-center text-xl md:text-2xl'>Oops! The page you're looking for doesn't exist.</p>
                 <p className='mb-8 text-center text-base text-gray-400 md:text-lg'>
-                    You tried to access: <span className='rounded bg-gray-700 px-2 py-1 font-mono'>{pathname}</span>
+                    You tried to access: <span className='rounded-sm bg-gray-700 px-2 py-1 font-mono'>{pathname}</span>
                 </p>
                 <Link
                     href='/'

@@ -37,15 +37,15 @@ export default function AmountSection() {
         }
     }, [searchParams])
 
-    const onWithdrawButtonClicked = (amount: string, withdrawAddress: string) => {
-        void transferToken(
-            withdrawAddress as Address,
-            BigInt(Number(amount) * Math.pow(10, Number(tokenDecimalsData?.tokenDecimals ?? 0))),
-        )
-    }
-
     useEffect(() => {
         if (!isRouting) {
+            const onWithdrawButtonClicked = (amount: string, withdrawAddress: string) => {
+                void transferToken(
+                    withdrawAddress as Address,
+                    BigInt(Number(amount) * Math.pow(10, Number(tokenDecimalsData?.tokenDecimals ?? 0))),
+                )
+            }
+
             setBottomBarContent(
                 <Button
                     onClick={() => onWithdrawButtonClicked(amount, withdrawAddress)}
@@ -54,7 +54,7 @@ export default function AmountSection() {
                 </Button>,
             )
         }
-    }, [amount, withdrawAddress, isRouting])
+    }, [amount, withdrawAddress, isRouting, setBottomBarContent, transferToken, tokenDecimalsData])
 
     useEffect(() => {
         if (isSuccess) {
@@ -72,7 +72,7 @@ export default function AmountSection() {
                         <h3 className='text-[11pt] font-semibold text-black'>Withdraw Amount</h3>
                         <h3 className='text-[36pt] font-bold text-[#4078FA]'>
                             <div className='flex items-center'>
-                                <span className={`mr-1px ${amount ? 'text-black' : 'text-gray-400'}`}>$</span>
+                                <span className={`mr-px ${amount ? 'text-black' : 'text-gray-400'}`}>$</span>
                                 <Input
                                     value={amount}
                                     onChange={handleAmountInputChange}

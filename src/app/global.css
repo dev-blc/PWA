@@ -107,7 +107,7 @@
     }
 
     body {
-        @apply flex flex-col bg-background text-foreground antialiased;
+        @apply bg-background text-foreground flex flex-col antialiased;
         /* PWA enhancements */
         -webkit-overflow-scrolling: touch;
         -webkit-tap-highlight-color: transparent;
@@ -181,7 +181,7 @@
     }
 
     .dropdown-backdrop {
-        @apply fixed left-0 top-0 z-50 h-full w-full bg-white/30 backdrop-blur-sm;
+        @apply fixed top-0 left-0 z-50 h-full w-full bg-white/30 backdrop-blur-xs;
     }
 
     .pool-button {

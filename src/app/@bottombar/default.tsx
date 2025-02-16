@@ -19,7 +19,7 @@ export default function BottomBar() {
                     ease: 'easeInOut',
                 }}
                 className='fixed bottom-0 left-0 z-30 w-full'>
-                <nav className='flex-center mx-auto h-24 max-w-screen-md rounded-t-3xl bg-neutral-100/50 pb-3 shadow shadow-black/25 backdrop-blur-[32.10px] px-safe-or-4'>
+                <nav className='flex-center px-safe-or-4 mx-auto h-24 max-w-screen-md rounded-t-3xl bg-neutral-100/50 pb-3 shadow-sm shadow-black/25 backdrop-blur-[32.10px]'>
                     {content}
                 </nav>
             </motion.footer>
