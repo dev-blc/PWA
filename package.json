@@ -88,8 +88,7 @@
         "wagmi": "2.14.11",
         "zsa": "0.6.0",
         "zsa-react-query": "0.2.1",
-        "zustand": "5.0.3",
-        "read-bigint": "0.1.7"
+        "zustand": "5.0.3"
     },
     "devDependencies": {
         "@chromatic-com/storybook": "3.2.4",
