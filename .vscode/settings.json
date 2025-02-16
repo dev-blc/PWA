@@ -1,10 +1,13 @@
 {
     // linting and formatting
     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+    "eslint.useFlatConfig": true,
+
     "prettier.documentSelectors": ["**/.editorconfig", "**/.gitignore", "**/*.svg", "**/*.toml"],
 
     // editor
     "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always",
         "source.fixAll": "always",
         "source.organizeImports": "always"
     },

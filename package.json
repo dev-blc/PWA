@@ -93,7 +93,10 @@
     },
     "devDependencies": {
         "@chromatic-com/storybook": "3.2.4",
+        "@eslint/eslintrc": "3.2.0",
+        "@eslint/js": "9.20.0",
         "@next/bundle-analyzer": "15.1.7",
+        "@next/eslint-plugin-next": "15.1.7",
         "@playwright/test": "1.50.1",
         "@storybook/addon-essentials": "8.5.6",
         "@storybook/addon-interactions": "8.5.6",
@@ -109,6 +112,8 @@
         "@testing-library/react": "16.2.0",
         "@testing-library/react-hooks": "8.0.1",
         "@testing-library/user-event": "14.6.1",
+        "@types/eslint-plugin-tailwindcss": "3.17.0",
+        "@types/eslint__eslintrc": "2.1.2",
         "@types/js-cookie": "3.0.6",
         "@types/jsonwebtoken": "9.0.8",
         "@types/node": "22.13.4",
@@ -123,9 +128,13 @@
         "eslint": "9.20.1",
         "eslint-config-next": "15.1.7",
         "eslint-config-prettier": "10.0.1",
+        "eslint-plugin-react": "7.37.4",
+        "eslint-plugin-react-hooks": "5.1.0",
         "eslint-plugin-storybook": "0.11.2",
         "eslint-plugin-tailwindcss": "3.18.0",
+        "globals": "15.15.0",
         "ignore-loader": "0.1.2",
+        "jiti": "2.4.2",
         "jsdom": "26.0.0",
         "postcss": "8.5.2",
         "prettier": "3.5.1",
@@ -137,6 +146,7 @@
         "tailwindcss-animate": "1.0.7",
         "tailwindcss-safe-area": "0.6.0",
         "typescript": "5.7.3",
+        "typescript-eslint": "8.24.0",
         "vite-tsconfig-paths": "5.1.4",
         "vitest": "3.0.5"
     },
@@ -216,6 +226,7 @@
             "prettier-plugin-tailwindcss"
         ],
         "tailwindConfig": "./tailwind.config.ts",
+        "tailwindStylesheet": "./src/app/globals.css",
         "tailwindFunctions": [
             "clsx",
             "classnames",
@@ -224,30 +235,6 @@
             "tw",
             "twMerge"
         ]
-    },
-    "eslintConfig": {
-        "parserOptions": {
-            "project": "./tsconfig.eslint.json"
-        },
-        "extends": [
-            "next/core-web-vitals",
-            "plugin:@typescript-eslint/recommended-type-checked",
-            "plugin:@tanstack/eslint-plugin-query/recommended",
-            "plugin:tailwindcss/recommended",
-            "prettier",
-            "plugin:storybook/recommended"
-        ],
-        "rules": {
-            "react/self-closing-comp": 1,
-            "@typescript-eslint/no-unused-vars": [
-                1,
-                {
-                    "argsIgnorePattern": "^_",
-                    "varsIgnorePattern": "^_"
-                }
-            ],
-            "@typescript-eslint/consistent-type-imports": 1
-        }
     },
     "packageManager": "pnpm@10.4.0+sha512.6b849d0787d97f8f4e1f03a9b8ff8f038e79e153d6f11ae539ae7c435ff9e796df6a862c991502695c7f9e8fac8aeafc1ac5a8dab47e36148d183832d886dd52"
 }
