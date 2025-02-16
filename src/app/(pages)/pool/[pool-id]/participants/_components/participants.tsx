@@ -66,7 +66,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
         if (isAdmin && currentTab === TabValue.Winners && !isRouting) {
             appActions.setBottomBarContent(
                 <Button
-                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'
+                    className='btn-cta mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
                     onClick={() => {
                         if (payoutAddresses.length === 0) {
                             toast('No payout saved.')
@@ -103,7 +103,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                     onValueChange={(value: string) => handleTabChange(value as TabValue)}>
                     {isAdmin && (
                         <>
-                            <TabsList className='fixed right-0 left-0 z-10 flex justify-start space-x-0 rounded-none border-b border-[#EAECF0] bg-white p-0 md:space-x-8'>
+                            <TabsList className='fixed left-0 right-0 z-10 flex justify-start space-x-0 rounded-none border-b border-[#EAECF0] bg-white p-0 md:space-x-8'>
                                 <TabsTrigger
                                     className='relative font-semibold before:absolute before:bottom-[-1px] before:left-0 before:hidden before:h-[2px] before:w-full before:bg-black data-[state=active]:text-black data-[state=active]:before:block'
                                     value={TabValue.Registered}>
@@ -120,7 +120,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                                     Winners
                                 </TabsTrigger>
                             </TabsList>
-                            <div className='h-[48px]'></div>
+                            <div className='h-[48px]' />
                         </>
                     )}
                     <TabsContent value='registered'></TabsContent>
