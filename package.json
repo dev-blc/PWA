@@ -11,7 +11,7 @@
         "build": "next build",
         "check-types": "tsc --noemit",
         "dev": "next dev",
-        "dev:https": "next dev --experimental-https",
+        "dev:https": "NODE_NO_WARNINGS=1 next dev --experimental-https",
         "dev:turbo": "TURBO=true next dev --turbo",
         "gen": "node scripts/generate-types.mjs",
         "gen:contracts": "pnpm gen contracts",
@@ -23,7 +23,8 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "rebuild": "node-gyp rebuild"
     },
     "dependencies": {
         "@coinbase/cbpay-js": "2.4.0",
@@ -87,7 +88,8 @@
         "wagmi": "2.14.11",
         "zsa": "0.6.0",
         "zsa-react-query": "0.2.1",
-        "zustand": "5.0.3"
+        "zustand": "5.0.3",
+        "read-bigint": "0.1.7"
     },
     "devDependencies": {
         "@chromatic-com/storybook": "3.2.4",
@@ -141,18 +143,60 @@
     "pnpm": {
         "overrides": {
             "@types/react": "19.0.8",
+            "bigint-buffer": "1.1.5",
             "bs58": "6.0.0",
             "glob": "11.0.1",
             "react": "19.0.0",
             "react-dom": "19.0.0",
             "rimraf": "6.0.1",
-            "tailwindcss": "4.0.6"
+            "tailwindcss": "4.0.6",
+            "typescript": "5.7.3",
+            "webpack": "4.47.0",
+            "gts": "5.0.1",
+            "karma-webpack": "5.0.0",
+            "glob@5.0.15": "11.0.1",
+            "glob@7.1.2": "11.0.1",
+            "glob@7.2.3": "11.0.1",
+            "rimraf@2.7.1": "6.0.1",
+            "uuid@3.4.0": "9.0.1",
+            "punycode": "2.3.1",
+            "whatwg-url": "^14.0.0",
+            "tr46": "^4.0.0"
         },
         "allowedDeprecatedVersions": {
             "@motionone/vue": "10.16.4",
+            "node-location-timezone": "1.1.0",
+            "copy-concurrently": "1.0.5",
+            "figgy-pudding": "3.5.2",
+            "fs-write-stream-atomic": "1.0.10",
+            "fsevents": "1.2.13",
             "lodash.isequal": "4.5.0",
-            "node-location-timezone": "1.1.0"
-        }
+            "move-concurrently": "1.0.1",
+            "resolve-url": "0.2.1",
+            "source-map-resolve": "0.5.3",
+            "source-map-url": "0.4.1",
+            "urix": "0.1.0"
+        },
+        "peerDependencyRules": {
+            "ignoreMissing": [
+                "webpack",
+                "typescript"
+            ],
+            "allowAny": [
+                "typescript",
+                "webpack"
+            ]
+        },
+        "onlyBuiltDependencies": [
+            "bigint-buffer",
+            "bufferutil",
+            "core-js-pure",
+            "esbuild",
+            "fsevents",
+            "keccak",
+            "sharp",
+            "utf-8-validate"
+        ]
     },
     "prettier": {
         "arrowParens": "avoid",
