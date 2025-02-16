@@ -25,11 +25,11 @@ export default async function RootLayout({ children, bottombar, modal, transacti
                 <Providers cookie={wagmiCookie}>
                     <LayoutGroup>
                         <MainWrapper>{children}</MainWrapper>
-                        {modal}
-                        {bottombar}
-                        {transactionprogressmodal}
-                        {/* <InstallPromptDrawer /> */}
                     </LayoutGroup>
+                    {/* <InstallPromptDrawer /> */}
+                    {transactionprogressmodal}
+                    {modal}
+                    {bottombar}
                 </Providers>
             </body>
         </html>

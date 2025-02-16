@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function MainWrapper({ children }: { children: React.ReactNode }) {
-    const router = useRouter()
     const isBottomBarVisible = Boolean(use$(appStore$.settings.bottomBarContent))
     const pathname = usePathname()
     const [currentPath, setCurrentPath] = useState(pathname)
@@ -20,15 +19,9 @@ export default function MainWrapper({ children }: { children: React.ReactNode })
         }
     }, [pathname, currentPath])
 
-    const handleDragEnd = (_event: unknown, info: { offset: { x: number } }) => {
-        if (info.offset.x > 100) {
-            router.back()
-        } else if (info.offset.x < -100) {
-            router.forward()
-        }
-    }
-
-    const pageTransition = getPageTransition(pathname)
+    // No apply transitions if it's an intercepted route (contains @modal)
+    const isInterceptedRoute = pathname?.includes('@modal')
+    const pageTransition = isInterceptedRoute ? null : getPageTransition(pathname)
 
     return (
         <main
@@ -42,16 +35,15 @@ export default function MainWrapper({ children }: { children: React.ReactNode })
                     key={currentPath}
                     className='flex flex-1 flex-col pt-safe'
                     layout
-                    layoutId={pathname === '/profile' ? 'profile-page' : undefined}
-                    drag={pathname === '/profile' ? 'x' : undefined}
-                    dragConstraints={pathname === '/profile' ? { left: 0, right: 0 } : undefined}
-                    dragElastic={0.2}
-                    onDragEnd={pathname === '/profile' ? handleDragEnd : undefined}
-                    variants={pageTransition.variants}
-                    initial='initial'
-                    animate='animate'
-                    exit='exit'
-                    transition={pageTransition.transition}>
+                    {...(pageTransition
+                        ? {
+                              variants: pageTransition.variants,
+                              initial: 'initial',
+                              animate: 'animate',
+                              exit: 'exit',
+                              transition: pageTransition.transition,
+                          }
+                        : {})}>
                     {children}
                 </motion.div>
             </AnimatePresence>

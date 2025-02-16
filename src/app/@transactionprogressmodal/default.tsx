@@ -29,7 +29,7 @@ export default function TransactionProgressModal() {
 
     return (
         <Drawer open={open}>
-            <DrawerTrigger asChild></DrawerTrigger>
+            <DrawerTrigger asChild />
             <DrawerContent className='bg-white'>
                 <DrawerHeader className='text-left'>
                     <DrawerTitle className='mb-6 text-center text-xl'>Transaction in Progress</DrawerTitle>
