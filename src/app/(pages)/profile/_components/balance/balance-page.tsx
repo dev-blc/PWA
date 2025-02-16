@@ -31,13 +31,13 @@ export default function ProfileBalanceSection() {
                     </h3>
                     {/* <div className='flex w-full flex-row gap-x-4'>
                         <Button
-                            className='mb-3 h-[40px] w-full rounded-lg bg-cta px-6 py-[11px] text-center text-base text-sm font-medium leading-normal text-white shadow-button active:shadow-button-push'
+                            className='mb-3 h-[40px] w-full rounded-lg btn-cta px-6 py-[11px] text-center text-base text-sm font-medium leading-normal text-white shadow-button active:shadow-button-push'
                             onClick={(e: any) => {
                                 setOpenOnRampDialog(true)
                             }}>
                             Deposit
                         </Button>
-                        <Button className='mb-3 h-[40px] w-full rounded-lg bg-cta px-6 py-[11px] text-center text-base text-sm font-medium leading-normal text-white shadow-button active:shadow-button-push'>
+                        <Button className='mb-3 h-[40px] w-full rounded-lg btn-cta px-6 py-[11px] text-center text-base text-sm font-medium leading-normal text-white shadow-button active:shadow-button-push'>
                             Withdraw
                         </Button>
                     </div> */}

@@ -96,7 +96,7 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
                         <div className='relative'>
                             <Input
                                 className={cn(
-                                    'h-24 border-none bg-transparent text-center text-6xl font-bold focus:ring-0 focus:outline-hidden',
+                                    'focus:outline-hidden h-24 border-none bg-transparent text-center text-6xl font-bold focus:ring-0',
                                     inputValue === '' ? 'text-gray-300' : 'text-black',
                                 )}
                                 placeholder='0'
@@ -124,7 +124,7 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
                             />
                         </div>
                         {inputValue && (
-                            <button onClick={clearInput} className='absolute top-4 -right-4 -translate-y-1/2'>
+                            <button onClick={clearInput} className='absolute -right-4 top-4 -translate-y-1/2'>
                                 <svg
                                     xmlns='http://www.w3.org/2000/svg'
                                     width='18'
@@ -146,13 +146,13 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
                 {/* <Button
                     disabled={inputValue === ''}
                     onClick={onPayoutButtonClicked}
-                    className='mb-3 h-[46px] w-full flex-1 grow flex-row items-center justify-center rounded-[2rem] bg-cta py-[11px] text-center align-middle font-semibold leading-normal text-white shadow-button active:bg-cta-active active:shadow-button-push'>
+                    className='btn-cta active:btn-cta-active mb-3 h-[46px] w-full flex-1 grow flex-row items-center justify-center rounded-[2rem] py-[11px] text-center align-middle font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
                     Payout
                 </Button> */}
                 <Button
                     disabled={inputValue === ''}
                     onClick={onSaveButtonClicked}
-                    className='bg-cta shadow-button active:bg-cta-active active:shadow-button-push mb-3 h-[46px] w-full flex-1 grow flex-row items-center justify-center rounded-[2rem] py-[11px] text-center align-middle leading-normal font-semibold text-white'>
+                    className='btn-cta active:btn-cta-active mb-3 h-[46px] w-full flex-1 grow flex-row items-center justify-center rounded-[2rem] py-[11px] text-center align-middle font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
                     Save
                 </Button>
             </div>

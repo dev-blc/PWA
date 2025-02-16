@@ -72,7 +72,7 @@ export default function InstallPromptDrawer() {
                     ) : (
                         <Button
                             onClick={handleInstall}
-                            className='w-full rounded-[2rem] bg-cta text-center font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
+                            className='btn-cta shadow-button active:shadow-button-push w-full rounded-[2rem] text-center leading-normal font-semibold text-white'>
                             Add to Home Screen
                         </Button>
                     )}

@@ -81,7 +81,7 @@ export default function CreatePoolForm() {
                     type='submit'
                     form='pool-form'
                     disabled={isButtonDisabled}
-                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
+                    className='btn-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                     {isProcessing ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : null}
                     {isProcessing
                         ? isPending

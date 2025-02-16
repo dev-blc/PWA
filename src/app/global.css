@@ -173,6 +173,10 @@
     .dropdown-backdrop {
         @apply fixed top-0 left-0 z-50 h-full w-full bg-white/30 backdrop-blur-xs;
     }
+
+    .btn-cta {
+        @apply bg-gradient-to-b from-[#36a0f7] to-[#1364da] px-6 active:from-[#2b80c5] active:to-[#0f50af];
+    }
 }
 
 /* PWA STYLES */

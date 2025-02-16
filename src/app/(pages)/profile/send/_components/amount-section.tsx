@@ -39,7 +39,7 @@ export default function AmountSection() {
             appActions.setBottomBarContent(
                 <Button
                     onClick={() => onWithdrawButtonClicked(amount, withdrawAddress)}
-                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
+                    className='btn-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                     <span>Withdraw</span>
                 </Button>,
             )
