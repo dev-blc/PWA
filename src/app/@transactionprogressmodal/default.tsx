@@ -3,7 +3,7 @@
 import { appStore$ } from '@/app/stores/app.store'
 import animationData from '@/public/app/animations/loading.json'
 import { use$ } from '@legendapp/state/react'
-import Lottie from 'lottie-react'
+import dynamic from 'next/dynamic'
 import {
     Drawer,
     DrawerContent,
@@ -12,6 +12,8 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from '../_components/ui/drawer'
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 
 export default function TransactionProgressModal() {
     const open = use$(appStore$.settings.transactionInProgress)
