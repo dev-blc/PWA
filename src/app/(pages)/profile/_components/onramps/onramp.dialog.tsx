@@ -1,15 +1,12 @@
 'use client'
 
+import Divider from '@/app/_components/divider'
 import { Button } from '@/app/_components/ui/button'
 import { Drawer } from '@/app/_components/ui/drawer'
-import Divider from '@/app/_components/divider'
-import OnRampCoinbaseButton from '@/app/(pages)/profile/_components/onramps/onramp-coinbase'
-import OnRampForm from './onramp.form'
-import ReceiveDialog from '@/app/(pages)/profile/_components/receive/receive.dialog'
-import Unlimit from '@/app/(pages)/profile/_components/onramps/unlimit'
 // import { OnrampWithStripe } from '@/app/(pages)/profile/_components/onramps/onramp-stripe'
-import { MoonpayCurrencyCode, MoonpayPaymentMethod, useFundWallet, useWallets } from '@privy-io/react-auth'
 import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
+import type { MoonpayCurrencyCode, MoonpayPaymentMethod } from '@privy-io/react-auth'
+import { useFundWallet, useWallets } from '@privy-io/react-auth'
 import { useAccount, useBalance } from 'wagmi'
 
 interface OnRampDialogProps {
