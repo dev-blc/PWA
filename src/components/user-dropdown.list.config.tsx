@@ -3,7 +3,7 @@ import type { LinkProps } from 'next/link'
 
 interface DropdownItemConfig {
     href?: LinkProps<unknown>['href']
-    icon: JSX.Element
+    icon: React.JSX.Element
     label: string
     onClick?: () => Promise<void> | void
     showSeparator?: boolean

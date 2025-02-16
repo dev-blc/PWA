@@ -17,6 +17,7 @@ import { dropdownItemsConfig } from './registered-dropdown.list.config'
 import useTransactions from '@/app/_client/hooks/use-transactions'
 import { poolAbi } from '@/types/contracts'
 import { currentPoolAddress } from '@/app/_server/blockchain/server-config'
+import React from 'react'
 
 /**
  * Variants for the dropdown menu animation using framer-motion.
@@ -41,12 +42,12 @@ const itemVariants: Variants = {
  * UserDropdownList component renders a list of dropdown items in the user menu.
  *
  * @component
- * @returns {JSX.Element} The rendered user dropdown list.
+ * @returns {React.JSX.Element} The rendered user dropdown list.
  */
 const RegisteredDropdownList: React.FC<{ setOpen: (open: boolean) => void; poolId: string }> = ({
     setOpen,
     poolId,
-}): JSX.Element => {
+}): React.JSX.Element => {
     const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(null)
     const dropdownListRef = useRef<HTMLDivElement | null>(null)
     const { executeTransactions, isPending, isConfirmed } = useTransactions()
