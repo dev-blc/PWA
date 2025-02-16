@@ -29,7 +29,7 @@ const itemVariants: Variants = {
     open: { opacity: 1, y: 0 },
 }
 
-const UserDropdownList: React.FC<{ setOpen: (open: boolean) => void }> = ({ setOpen }): JSX.Element => {
+const UserDropdownList: React.FC<{ setOpen: (open: boolean) => void }> = ({ setOpen }): React.JSX.Element => {
     const { logout } = useAuth()
     const [hoveredItemIndex, setHoveredItemIndex] = useState<number | null>(null)
     const dropdownListRef = useRef<HTMLDivElement | null>(null)

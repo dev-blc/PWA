@@ -10,7 +10,7 @@ import { EllipsisIcon } from 'lucide-react'
 import { useState } from 'react'
 import UserDropdownList from './user-dropdown.list'
 
-const UserDropdown: React.FC = (): JSX.Element => {
+const UserDropdown: React.FC = (): React.JSX.Element => {
     const [open, setOpen] = useState(false)
     const container = document.querySelector('main')
 
