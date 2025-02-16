@@ -21,7 +21,6 @@ export const experimentalConfig = {
     // },
     //
     // optimizePackageImports: [
-    //     'lodash',
     //     'date-fns',
     //     'lucide-react', // Added to optimize icons
     //     '@serwist/next', // Added to optimize PWA
