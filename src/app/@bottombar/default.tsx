@@ -1,10 +1,11 @@
 'use client'
 
+import { appStore$ } from '@/app/stores/app.store'
+import { use$ } from '@legendapp/state/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useAppStore } from '../_client/providers/app-store.provider'
 
 export default function BottomBar() {
-    const content = useAppStore(s => s.bottomBarContent)
+    const content = use$(appStore$.settings.bottomBarContent)
 
     if (!content) return null
 

@@ -1,15 +1,14 @@
+import { ContractCall } from '@/app/_lib/entities/models/contract-call'
+import { appActions } from '@/app/stores/app.store'
 import { useWallets } from '@privy-io/react-auth'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { ConnectorNotConnectedError, getPublicClient } from '@wagmi/core'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import type { Hash, PublicClient, TransactionReceipt } from 'viem'
+import { waitForTransactionReceipt } from 'viem/actions'
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useCallsStatus, useWriteContracts } from 'wagmi/experimental'
-import { ContractCall } from '@/app/_lib/entities/models/contract-call'
-import { useAppStore } from '../providers/app-store.provider'
-import { waitForTransactionReceipt } from 'viem/actions'
-import { getPublicClient } from '@wagmi/core'
 import { getConfig } from '../providers/configs/wagmi.config'
-import { ConnectorNotConnectedError } from '@wagmi/core'
-import { toast } from 'sonner'
 
 interface SmartTransactionResult {
     hash: Hash | null
@@ -47,7 +46,6 @@ export default function useTransactions() {
             onMutate(variables) {
                 console.log('Optimistic update here', variables)
             },
-            // onSuccess(data, variables, context) {},
         },
     })
     const { data: hash, writeContractAsync } = useWriteContract()
@@ -159,7 +157,6 @@ export default function useTransactions() {
         [writeContractsAsync, walletsReady, wallets],
     )
 
-    const setTransactionInProgress = useAppStore(s => s.setTransactionInProgress)
     const [currentTransactionIndex, setCurrentTransactionIndex] = useState(0)
     const [totalTransactions, setTotalTransactions] = useState(0)
 
@@ -169,7 +166,7 @@ export default function useTransactions() {
         console.log('🔄 [useTransactions] Executing EOA transactions:', contractCalls.length)
         setTotalTransactions(contractCalls.length)
         setCurrentTransactionIndex(0)
-        setTransactionInProgress(true)
+        appActions.setTransactionInProgress(true)
 
         try {
             for (const [index, call] of contractCalls.entries()) {
@@ -224,7 +221,7 @@ export default function useTransactions() {
             }))
             throw error
         } finally {
-            setTransactionInProgress(false)
+            appActions.setTransactionInProgress(false)
             setCurrentTransactionIndex(0)
             setResult(prev => ({ ...prev, isLoading: false }))
         }
@@ -241,7 +238,7 @@ export default function useTransactions() {
             try {
                 setCurrentTransaction(config)
                 transactionInProgressRef.current = true
-                setTransactionInProgress(true)
+                appActions.setTransactionInProgress(true)
 
                 const walletType = wallets[0]?.connectorType
                 console.log('🔍 [useTransactions] Using wallet type:', walletType)
@@ -269,7 +266,7 @@ export default function useTransactions() {
             } finally {
                 setTimeout(() => {
                     transactionInProgressRef.current = false
-                    setTransactionInProgress(false)
+                    appActions.setTransactionInProgress(false)
                     setCurrentTransaction(null)
                 }, 500)
             }
@@ -289,8 +286,8 @@ export default function useTransactions() {
         setIsConfirmed(false)
         setCurrentTransaction(null)
         transactionInProgressRef.current = false
-        setTransactionInProgress(false)
-    }, [setTransactionInProgress])
+        appActions.setTransactionInProgress(false)
+    }, [])
 
     // Add cleanup effect
     useEffect(() => {
@@ -302,7 +299,7 @@ export default function useTransactions() {
     // Add this effect to handle cleanup on unmount or when transaction completes
     useEffect(() => {
         const cleanup = () => {
-            setTransactionInProgress(false)
+            appActions.setTransactionInProgress(false)
             transactionInProgressRef.current = false
             setCurrentTransaction(null)
         }
@@ -313,7 +310,7 @@ export default function useTransactions() {
         }
 
         return cleanup
-    }, [isConfirmed, setTransactionInProgress])
+    }, [isConfirmed])
 
     useEffect(() => {
         console.log('👀 [useTransactions] Effect: Transaction status changed', {
@@ -323,7 +320,7 @@ export default function useTransactions() {
 
         const cleanup = () => {
             console.log('🧹 [useTransactions] Cleanup triggered')
-            setTransactionInProgress(false)
+            appActions.setTransactionInProgress(false)
             transactionInProgressRef.current = false
             setCurrentTransaction(null)
         }

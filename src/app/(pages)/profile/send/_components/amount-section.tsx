@@ -1,13 +1,11 @@
 'use client'
 
-import { useAppStore } from '@/app/_client/providers/app-store.provider'
 import { Button } from '@/app/_components/ui/button'
 import { Input } from '@/app/_components/ui/input'
 import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
-import { useSearchParams } from 'next/navigation'
-import * as React from 'react'
+import { appActions, appStore$ } from '@/app/stores/app.store'
+import { use$ } from '@legendapp/state/react'
 import { useEffect, useState } from 'react'
-import type { Address } from 'viem'
 import Container from '../../claim-winning/_components/container'
 import SectionContent from '../../claim-winning/_components/section-content'
 import { useTokenDecimals } from './use-token-decimals'
@@ -16,7 +14,7 @@ import { useTransferToken } from './use-transfer-tokens'
 export default function AmountSection() {
     const [amount, setAmount] = useState('')
     const [withdrawAddress, setWithdrawAddress] = useState('')
-    const searchParams = useSearchParams()
+    const isRouting = use$(appStore$.settings.isRouting)
 
     const handleAmountInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAmount(event.target.value)
@@ -24,8 +22,6 @@ export default function AmountSection() {
     const handleWithdrawAddressInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setWithdrawAddress(event.target.value)
     }
-    const setBottomBarContent = useAppStore(state => state.setBottomBarContent)
-    const isRouting = useAppStore(state => state.isRouting)
 
     const { tokenDecimalsData } = useTokenDecimals(currentTokenAddress)
     const { transferToken, isSuccess, setIsSuccess } = useTransferToken()
@@ -39,22 +35,18 @@ export default function AmountSection() {
 
     useEffect(() => {
         if (!isRouting) {
-            const onWithdrawButtonClicked = (amount: string, withdrawAddress: string) => {
-                void transferToken(
-                    withdrawAddress as Address,
-                    BigInt(Number(amount) * Math.pow(10, Number(tokenDecimalsData?.tokenDecimals ?? 0))),
-                )
-            }
-
-            setBottomBarContent(
+            appActions.setBottomBarContent(
                 <Button
                     onClick={() => onWithdrawButtonClicked(amount, withdrawAddress)}
-                    className='pool-button mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base font-semibold leading-normal shadow-button active:shadow-button-push'>
+                    className='pool-button shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold'>
                     <span>Withdraw</span>
                 </Button>,
             )
         }
-    }, [amount, withdrawAddress, isRouting, setBottomBarContent, transferToken, tokenDecimalsData])
+        return () => {
+            appActions.setBottomBarContent(null)
+        }
+    }, [amount, withdrawAddress, isRouting])
 
     useEffect(() => {
         if (isSuccess) {
@@ -76,7 +68,7 @@ export default function AmountSection() {
                                 <Input
                                     value={amount}
                                     onChange={handleAmountInputChange}
-                                    className='rounded-none border-none bg-transparent p-0 text-[36pt] font-bold caret-[#4078FA] outline-none ring-0 focus:border-none focus:outline-none focus:ring-0'
+                                    className='rounded-none border-none bg-transparent p-0 text-[36pt] font-bold caret-[#4078FA] ring-0 outline-none focus:border-none focus:ring-0 focus:outline-none'
                                     type='number'
                                     placeholder='0'
                                 />
