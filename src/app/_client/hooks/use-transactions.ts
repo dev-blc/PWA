@@ -1,4 +1,4 @@
-import { ContractCall } from '@/app/_lib/entities/models/contract-call'
+import type { ContractCall } from '@/app/_lib/entities/models/contract-call'
 import { appActions } from '@/app/stores/app.store'
 import { useWallets } from '@privy-io/react-auth'
 import { ConnectorNotConnectedError, getPublicClient } from '@wagmi/core'

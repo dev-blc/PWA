@@ -1,36 +1,36 @@
 'use client'
 
+import { Button } from '@/app/_components/ui/button'
+import { Input } from '@/app/_components/ui/input'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
+import { useWallets } from '@privy-io/react-auth'
+import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js'
+import { toNumber } from 'lodash'
+import { ChevronDown, Search, X } from 'lucide-react'
+import Image from 'next/image'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { toHex } from 'viem'
+import { loadChains } from '../_utils/chainsLoader'
+import { BridgeInfoCard } from './bridge-card'
+import { TransactionHistory } from './tx-history'
 import type { BridgeInfo } from './utils'
 import {
     API_paths,
+    chainIdHex,
+    chainIdToName,
     checkApprovalStatus,
+    fetchStatus,
+    formatTime,
+    getOKXAccount,
     sendGetRequest,
     toDecimals,
+    tokenAddressToLogo,
+    tokenAddressToName,
     toWholeNumber,
     USDC_BASE,
-    formatTime,
-    fetchStatus,
-    getOKXAccount,
-    tokenAddressToName,
-    tokenAddressToLogo,
-    chainIdToName,
-    chainIdHex,
 } from './utils'
-import { useWallets } from '@privy-io/react-auth'
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import { Button } from '@/app/_components/ui/button'
-import { toHex } from 'viem'
-import * as React from 'react'
-import Image from 'next/image'
-import { ChevronDown, Search, X } from 'lucide-react'
-import { toNumber } from 'lodash'
-import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js'
-import { Input } from '@/app/_components/ui/input'
-import { BridgeInfoCard } from './bridge-card'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
-import { TransactionHistory } from './tx-history'
-import { loadChains } from '../_utils/chainsLoader'
 import WalletAccountSection from './wallet-account-section'
 
 // TEMPLATE NETWORK AND TOKEN ARRAY

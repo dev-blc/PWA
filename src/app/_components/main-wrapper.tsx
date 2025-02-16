@@ -5,7 +5,7 @@ import { getPageTransition } from '@/lib/utils/animations'
 import { cn } from '@/lib/utils/tailwind'
 import { use$ } from '@legendapp/state/react'
 import { AnimatePresence, motion } from 'motion/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function MainWrapper({ children }: { children: React.ReactNode }) {

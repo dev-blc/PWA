@@ -1,7 +1,7 @@
-import PoolsBalance from '@/app/(pages)/pools/_components/pools-balance'
 import ActionBar from '@/app/(pages)/pools/_components/action-bar'
-import TopBar from './top-bar'
+import PoolsBalance from '@/app/(pages)/pools/_components/pools-balance'
 import type { TopBarProps } from './top-bar'
+import TopBar from './top-bar'
 
 type TopSectionProps = {
     topBarProps?: TopBarProps

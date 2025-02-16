@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Drawer } from '@/app/_components/ui/drawer'
 import { Button } from '@/app/_components/ui/button'
+import { Drawer } from '@/app/_components/ui/drawer'
+import { useEffect, useState } from 'react'
 
 export default function InstallPromptDrawer() {
     const [isOpen, setIsOpen] = useState(false)
