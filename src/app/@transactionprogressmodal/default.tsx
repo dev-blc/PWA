@@ -1,19 +1,20 @@
 'use client'
 
-import Lottie from 'lottie-react'
+import { appStore$ } from '@/app/stores/app.store'
 import animationData from '@/public/app/animations/loading.json'
+import { use$ } from '@legendapp/state/react'
+import Lottie from 'lottie-react'
 import {
-    DrawerContent,
-    DrawerHeader,
     Drawer,
-    DrawerTrigger,
-    DrawerTitle,
+    DrawerContent,
     DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
 } from '../_components/ui/drawer'
-import { useAppStore } from '../_client/providers/app-store.provider'
 
 export default function TransactionProgressModal() {
-    const open = useAppStore(s => s.transactionInProgress)
+    const open = use$(appStore$.settings.transactionInProgress)
 
     const defaultOptions = {
         loop: true,

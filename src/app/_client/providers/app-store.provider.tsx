@@ -1,33 +1,21 @@
 'use client'
 
-import { type ReactNode, createContext, useRef, useContext } from 'react'
-import { useStore } from 'zustand'
+import { enable$GetSet } from '@legendapp/state/config/enable$GetSet'
+import { enableReactTracking } from '@legendapp/state/config/enableReactTracking'
+import type { ReactNode } from 'react'
 
-import { type AppStore, createAppStore, initAppStore } from '@/app/_client/stores/app.store'
-
-export type AppStoreApi = ReturnType<typeof createAppStore>
-
-export const AppStoreContext = createContext<AppStoreApi | undefined>(undefined)
+// Global Legend State configuration
+enable$GetSet()
+enableReactTracking({
+    warnMissingUse: true, // Helps detect incorrect usage in development
+})
 
 export interface AppStoreProviderProps {
     children: ReactNode
 }
 
+// We no longer need a real provider, we just use this component
+// to ensure the configuration runs once
 export const AppStoreProvider = ({ children }: AppStoreProviderProps) => {
-    const storeRef = useRef<AppStoreApi>()
-    if (!storeRef.current) {
-        storeRef.current = createAppStore(initAppStore())
-    }
-
-    return <AppStoreContext.Provider value={storeRef.current}>{children}</AppStoreContext.Provider>
-}
-
-export const useAppStore = <T,>(selector: (store: AppStore) => T): T => {
-    const appStoreContext = useContext(AppStoreContext)
-
-    if (!appStoreContext) {
-        throw new Error(`useAppStore must be used within AppStoreProvider`)
-    }
-
-    return useStore(appStoreContext, selector)
+    return children
 }

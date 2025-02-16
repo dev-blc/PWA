@@ -2,18 +2,20 @@
 
 import { Button } from '@/app/_components/ui/button'
 import { Input } from '@/app/_components/ui/input'
+import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
+import { appActions, appStore$ } from '@/app/stores/app.store'
+import { use$ } from '@legendapp/state/react'
 import { useEffect, useState } from 'react'
 import type { Address } from 'viem'
 import Container from '../../claim-winning/_components/container'
 import SectionContent from '../../claim-winning/_components/section-content'
 import { useTokenDecimals } from './use-token-decimals'
-import { useAppStore } from '@/app/_client/providers/app-store.provider'
-import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
 import { useTransferToken } from './use-transfer-tokens'
 
 export default function AmountSection() {
     const [amount, setAmount] = useState('')
     const [withdrawAddress, setWithdrawAddress] = useState('')
+    const isRouting = use$(appStore$.settings.isRouting)
 
     const handleAmountInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAmount(event.target.value)
@@ -21,8 +23,6 @@ export default function AmountSection() {
     const handleWithdrawAddressInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setWithdrawAddress(event.target.value)
     }
-    const setBottomBarContent = useAppStore(state => state.setBottomBarContent)
-    const isRouting = useAppStore(state => state.isRouting)
 
     const { tokenDecimalsData } = useTokenDecimals(currentTokenAddress)
     const { transferToken, isSuccess, setIsSuccess } = useTransferToken()
@@ -36,13 +36,16 @@ export default function AmountSection() {
 
     useEffect(() => {
         if (!isRouting) {
-            setBottomBarContent(
+            appActions.setBottomBarContent(
                 <Button
                     onClick={() => onWithdrawButtonClicked(amount, withdrawAddress)}
                     className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                     <span>Withdraw</span>
                 </Button>,
             )
+        }
+        return () => {
+            appActions.setBottomBarContent(null)
         }
     }, [amount, withdrawAddress, isRouting])
 

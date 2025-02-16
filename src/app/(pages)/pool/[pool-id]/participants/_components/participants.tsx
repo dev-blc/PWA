@@ -2,11 +2,12 @@
 
 import SearchBar from '@/app/(pages)/pool/[pool-id]/participants/_components/searchBar'
 import { useTokenDecimals } from '@/app/(pages)/profile/send/_components/use-token-decimals'
-import { useAppStore } from '@/app/_client/providers/app-store.provider'
 import { usePayoutStore } from '@/app/_client/stores/payout-store'
 import { Button } from '@/app/_components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/_components/ui/tabs'
+import { appActions, appStore$ } from '@/app/stores/app.store'
 import { useParticipants } from '@/hooks/use-participants'
+import { use$ } from '@legendapp/state/react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { formatUnits } from 'viem'
@@ -27,10 +28,7 @@ export enum TabValue {
 }
 
 const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
-    const { setBottomBarContent, isRouting } = useAppStore(s => ({
-        setBottomBarContent: s.setBottomBarContent,
-        isRouting: s.isRouting,
-    }))
+    const isRouting = use$(appStore$.settings.isRouting)
     const [query, setQuery] = useState('')
     const { data: participants, isLoading, error } = useParticipants(poolId)
     const poolData = usePoolDetails(poolId)
@@ -42,6 +40,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
     const [totalSavedPayout, setTotalSavedPayout] = useState<string>('0')
     const tokenAddress = poolData?.poolDetails?.poolDetailFromSC?.[4]
     const tokenDecimals = useTokenDecimals(tokenAddress || '16').tokenDecimalsData.tokenDecimals
+
     const filteredParticipants = useMemo(() => {
         return (
             participants?.filter(
@@ -65,9 +64,9 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
 
     useEffect(() => {
         if (isAdmin && currentTab === TabValue.Winners && !isRouting) {
-            setBottomBarContent(
+            appActions.setBottomBarContent(
                 <Button
-                    className='mb-3 h-[46px] w-full rounded-[2rem] bg-cta px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
+                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'
                     onClick={() => {
                         if (payoutAddresses.length === 0) {
                             toast('No payout saved.')
@@ -80,8 +79,8 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                 </Button>,
             )
         }
-        return () => setBottomBarContent(null)
-    }, [setBottomBarContent, isAdmin, currentTab, payoutAddresses, payoutAmounts, isRouting])
+        return () => appActions.setBottomBarContent(null)
+    }, [isAdmin, currentTab, payoutAddresses, payoutAmounts, isRouting, isPending, isConfirming])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value)
@@ -104,7 +103,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                     onValueChange={(value: string) => handleTabChange(value as TabValue)}>
                     {isAdmin && (
                         <>
-                            <TabsList className='fixed left-0 right-0 z-10 flex justify-start space-x-0 rounded-none border-b border-[#EAECF0] bg-white p-0 md:space-x-8'>
+                            <TabsList className='fixed right-0 left-0 z-10 flex justify-start space-x-0 rounded-none border-b border-[#EAECF0] bg-white p-0 md:space-x-8'>
                                 <TabsTrigger
                                     className='relative font-semibold before:absolute before:bottom-[-1px] before:left-0 before:hidden before:h-[2px] before:w-full before:bg-black data-[state=active]:text-black data-[state=active]:before:block'
                                     value={TabValue.Registered}>
