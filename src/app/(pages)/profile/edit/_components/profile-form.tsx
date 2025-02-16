@@ -33,7 +33,7 @@ const formFields = [
     },
 ] as const
 
-type FormFieldKey = (typeof formFields)[number]['key']
+type _FormFieldKey = (typeof formFields)[number]['key']
 
 const initialState = {
     message: '',
@@ -80,9 +80,13 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
             return
         }
         if (state?.message === 'Profile updated successfully') {
-            queryClient.invalidateQueries({
-                queryKey: ['user-info', user.id],
-            })
+            queryClient
+                .invalidateQueries({
+                    queryKey: ['user-info', user.id],
+                })
+                .catch(error => {
+                    console.error('Error invalidating user info', error)
+                })
             router.back()
         }
     }, [state?.message, router, ready, user?.id, queryClient])
@@ -104,7 +108,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
             }}
             className='mx-auto flex w-full max-w-full flex-col'>
             {formFields.map(field => {
-                const errors = state?.errors && field.key in state.errors ? state.errors[field.key as FormFieldKey] : []
+                const errors = state?.errors && field.key in state.errors ? state.errors[field.key] : []
                 let defaultValue: string | undefined
 
                 if (field.key === 'displayName') {

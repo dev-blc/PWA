@@ -36,7 +36,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
 
     const [payoutAddresses, setPayoutAddresses] = useState<string[]>([])
     const [payoutAmounts, setPayoutAmounts] = useState<string[]>([])
-    const { setWinners, isPending, isConfirming, isError } = useSetWinners(poolId)
+    const { setWinners, isPending, isConfirming } = useSetWinners(poolId)
     const [totalSavedPayout, setTotalSavedPayout] = useState<string>('0')
     const tokenAddress = poolData?.poolDetails?.poolDetailFromSC?.[4]
     const tokenDecimals = useTokenDecimals(tokenAddress || '16').tokenDecimalsData.tokenDecimals
@@ -71,7 +71,9 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                         if (payoutAddresses.length === 0) {
                             toast('No payout saved.')
                         } else {
-                            setWinners(payoutAddresses, payoutAmounts)
+                            setWinners(payoutAddresses, payoutAmounts).catch(error => {
+                                console.log('setWinner Error', error)
+                            })
                         }
                     }}
                     disabled={isPending || isConfirming}>
@@ -80,7 +82,7 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
             )
         }
         return () => appActions.setBottomBarContent(null)
-    }, [isAdmin, currentTab, payoutAddresses, payoutAmounts, isRouting, isPending, isConfirming])
+    }, [isAdmin, currentTab, payoutAddresses, payoutAmounts, isRouting, isPending, isConfirming, setWinners])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value)
@@ -123,9 +125,9 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                             <div className='h-[48px]' />
                         </>
                     )}
-                    <TabsContent value='registered'></TabsContent>
-                    <TabsContent value='checkedIn'></TabsContent>
-                    <TabsContent value='winners'></TabsContent>
+                    <TabsContent value='registered' />
+                    <TabsContent value='checkedIn' />
+                    <TabsContent value='winners' />
                     {currentTab === TabValue.Winners && (
                         <div className='my-4'>
                             <PoolBalanceProgress
@@ -141,7 +143,8 @@ const Participants = ({ poolId, isAdmin }: PoolParticipantsProps) => {
                                         BigInt(poolData?.poolDetails?.poolDetailFromSC?.[2]?.totalDeposits ?? 0),
                                         tokenDecimals,
                                     ),
-                                )}></PoolBalanceProgress>
+                                )}
+                            />
                         </div>
                     )}
                     <ParticipantList

@@ -42,7 +42,7 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
         toast.success('Payout saved successfully')
     }
 
-    const onPayoutButtonClicked = () => {
+    const _onPayoutButtonClicked = () => {
         const SetWinnerFunction = getAbiItem({
             abi: poolAbi,
             name: 'setWinner',
@@ -58,16 +58,14 @@ const PayoutForm: React.FC<PayoutFormProps> = ({ poolId, participantId, tokenAdd
             },
         ]
 
-        try {
-            executeTransactions(args, {
-                type: 'SET_WINNER',
-                onSuccess: () => {
-                    toast.success('Payout Successful', { description: `Transaction: ${hash}` })
-                },
-            })
-        } catch (error) {
+        executeTransactions(args, {
+            type: 'SET_WINNER',
+            onSuccess: () => {
+                toast.success('Payout Successful', { description: `Transaction: ${hash}` })
+            },
+        }).catch(error => {
             console.log('setWinner Error', error)
-        }
+        })
     }
 
     const clearInput = () => {
