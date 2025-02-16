@@ -150,17 +150,12 @@ const config: Config = {
         require('tailwindcss-animate'),
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         require('tailwindcss-safe-area'),
-        plugin(function ({
-            addUtilities,
-        }: {
-            addUtilities: (utilities: Record<string, Record<string, string>>) => void
-        }) {
-            const newUtilities = {
+        plugin(({ addUtilities }) => {
+            addUtilities({
                 '.overflow-scrolling-touch': {
                     '-webkit-overflow-scrolling': 'touch',
                 },
-            }
-            addUtilities(newUtilities)
+            })
         }),
     ],
 }

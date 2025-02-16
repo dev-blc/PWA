@@ -89,9 +89,6 @@ importers:
       '@supabase/supabase-js':
         specifier: 2.48.1
         version: 2.48.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@tailwindcss/postcss':
-        specifier: 4.0.6
-        version: 4.0.6
       '@tanstack/react-query':
         specifier: 5.66.0
         version: 5.66.0(react@19.0.0)
@@ -188,12 +185,6 @@ importers:
       sonner:
         specifier: 1.7.4
         version: 1.7.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      tailwind-merge:
-        specifier: 3.0.1
-        version: 3.0.1
-      tailwindcss-animate:
-        specifier: 1.0.7
-        version: 1.0.7(tailwindcss@4.0.6)
       vaul:
         specifier: 1.1.2
         version: 1.1.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -243,6 +234,9 @@ importers:
       '@storybook/test':
         specifier: 8.5.6
         version: 8.5.6(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@5.0.10))
+      '@tailwindcss/postcss':
+        specifier: 4.0.6
+        version: 4.0.6
       '@tanstack/eslint-plugin-query':
         specifier: 5.66.1
         version: 5.66.1(eslint@9.20.1(jiti@2.4.2))(typescript@5.7.3)
@@ -333,9 +327,15 @@ importers:
       storybook:
         specifier: 8.5.6
         version: 8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@5.0.10)
+      tailwind-merge:
+        specifier: 3.0.1
+        version: 3.0.1
       tailwindcss:
         specifier: 4.0.6
         version: 4.0.6
+      tailwindcss-animate:
+        specifier: 1.0.7
+        version: 1.0.7(tailwindcss@4.0.6)
       tailwindcss-safe-area:
         specifier: 0.6.0
         version: 0.6.0(tailwindcss@4.0.6)
