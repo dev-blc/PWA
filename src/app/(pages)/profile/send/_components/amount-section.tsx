@@ -39,7 +39,7 @@ export default function AmountSection() {
             setBottomBarContent(
                 <Button
                     onClick={() => onWithdrawButtonClicked(amount, withdrawAddress)}
-                    className='mb-3 h-[46px] w-full rounded-[2rem] bg-cta px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
+                    className='bg-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                     <span>Withdraw</span>
                 </Button>,
             )
@@ -66,7 +66,7 @@ export default function AmountSection() {
                                 <Input
                                     value={amount}
                                     onChange={handleAmountInputChange}
-                                    className='rounded-none border-none bg-transparent p-0 text-[36pt] font-bold caret-[#2785EA] outline-none ring-0 focus:border-none focus:outline-none focus:ring-0'
+                                    className='rounded-none border-none bg-transparent p-0 text-[36pt] font-bold caret-[#2785EA] ring-0 outline-hidden focus:border-none focus:ring-0 focus:outline-hidden'
                                     type='number'
                                     placeholder='0'
                                 />

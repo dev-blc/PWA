@@ -3,7 +3,7 @@ import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
     content: ['./src/**/*.tsx'],
-    darkMode: ['class'],
+    darkMode: ['class', '[data-mode="dark"]'],
     // prefix: '',
     theme: {
         container: {

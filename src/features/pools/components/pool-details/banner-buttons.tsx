@@ -21,7 +21,7 @@ function BannerButton({ onClick, icon: Icon, tooltip }: BannerButtonProps) {
                     <Button
                         onClick={onClick}
                         size='icon'
-                        className='rounded-full bg-black/40 transition-colors duration-200 hover:bg-black/60 focus:ring-2 focus:ring-white/50 active:bg-black/80'>
+                        className='focus: -white/50 rounded-full bg-black/40 transition-colors duration-200 hover:bg-black/60 focus:ring-2 active:bg-black/80'>
                         {Icon && <Icon className='size-5 text-white' />}
                     </Button>
                 </TooltipTrigger>
@@ -69,7 +69,7 @@ export default function PoolDetailsBannerButtons({ isAdmin }: PoolDetailsBannerB
     const visibleButtons = buttons.filter(button => !button.adminOnly || isAdmin)
 
     return (
-        <div className='absolute right-4 top-4 flex h-full flex-col gap-2'>
+        <div className='absolute top-4 right-4 flex h-full flex-col gap-2'>
             {visibleButtons.map((ButtonData, index) => (
                 <motion.div
                     key={index}
