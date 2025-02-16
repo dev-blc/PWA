@@ -861,7 +861,7 @@ const CrossChainSwapSection = () => {
                 <div className='mx-auto max-w-md'>
                     <button
                         onClick={ifApproved ? handleSwap : handleApproveBridge}
-                        className='bg-cta shadow-button active:shadow-button-push h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
+                        className='btn-cta shadow-button active:shadow-button-push h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
                         {ifApproved ? 'Bridge' : 'Approve'}
                     </button>
                     <TransactionHistory
