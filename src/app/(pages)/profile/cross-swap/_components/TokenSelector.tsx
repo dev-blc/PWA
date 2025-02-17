@@ -2,6 +2,7 @@ import { Input } from '@/app/_components/ui/input'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
 import { Search, X } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
 import type { OKXNetwork, OKXToken } from '../types'
 import { useSheetDrag } from './hooks/useSheetDrag'
 
@@ -29,7 +30,7 @@ export const TokenSelector = ({
     networks,
 }: TokenSelectorProps) => {
     const { sheetRef, handleDragStart, handleDrag, handleDragEnd } = useSheetDrag(onClose)
-
+    const [networkName, setNetworkName] = useState('all')
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent ref={sheetRef} side='bottom' className='h-[85vh] touch-none rounded-t-[24px] p-4'>
@@ -63,28 +64,82 @@ export const TokenSelector = ({
                     </div>
                 </div>
 
-                {/* Network selection */}
-                <div className='mt-4'>
-                    <div className='flex flex-wrap gap-2'>
-                        <button
-                            onClick={() => onNetworkSelect('all')}
-                            className={`rounded-full px-4 py-2 text-sm ${
-                                selectedNetwork === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'
-                            }`}>
-                            All Networks
-                        </button>
-                        {networks.map(network => (
+                <div className='mt-6'>
+                    <div className='mb-4 text-[12px] font-bold text-black'>
+                        Select network: {selectedNetwork !== 'all' ? networkName : 'All'}
+                    </div>
+                    <div className='relative -mx-6'>
+                        <div className='flex gap-2 overflow-x-scroll px-6 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
                             <button
-                                key={network.chainId}
-                                onClick={() => onNetworkSelect(network.chainId)}
-                                className={`rounded-full px-4 py-2 text-sm ${
-                                    selectedNetwork === network.chainId
-                                        ? 'bg-primary text-white'
-                                        : 'bg-gray-100 text-gray-600'
-                                }`}>
-                                {network.chainName}
+                                onClick={() => onNetworkSelect('all')}
+                                className={`flex h-[44px] min-w-[54px] shrink-0 items-center justify-center rounded-[6px] border border-solid ${
+                                    selectedNetwork === 'all' ? 'border-black' : 'border-[#E1E1E1]'
+                                } p-0`}>
+                                <div className='text-sm font-medium'>All</div>
                             </button>
-                        ))}
+                            {networks.map(network => {
+                                const networkKey = (() => {
+                                    const name = network.chainName?.toLowerCase().replace(/\s+/g, '')
+                                    // Special cases mapping
+                                    switch (name) {
+                                        case 'avalanchecchain':
+                                        case 'avalanchec':
+                                            return 'avalanche'
+                                        case 'ethereummainnet':
+                                        case 'ethereum':
+                                            return 'eth'
+                                        case 'bnbsmartchain':
+                                        case 'bnbchain':
+                                            return 'binance'
+                                        case 'xlayer':
+                                            return 'okbwebp'
+                                        default:
+                                            return name
+                                    }
+                                })()
+                                const hasIcon = [
+                                    'arbitrum',
+                                    'avalanche',
+                                    'base',
+                                    'binance',
+                                    'eth',
+                                    'linea',
+                                    'okb',
+                                    'optimism',
+                                    'polygon',
+                                    'scroll',
+                                    'solana',
+                                    'tron',
+                                    'zksyncera',
+                                ].includes(networkKey)
+
+                                return (
+                                    <button
+                                        key={network.chainId}
+                                        onClick={() => {
+                                            onNetworkSelect(network.chainId)
+                                            setNetworkName(network.chainName)
+                                        }}
+                                        className={`flex h-[44px] min-w-[54px] shrink-0 items-center justify-center rounded-[6px] border border-solid ${
+                                            selectedNetwork === network.chainId ? 'border-black' : 'border-[#E1E1E1]'
+                                        } p-0`}>
+                                        {hasIcon ? (
+                                            <Image
+                                                src={`/chain-icons/${networkKey}.webp`}
+                                                alt={network.chainName}
+                                                width={24}
+                                                height={24}
+                                                className='h-6 w-6'
+                                            />
+                                        ) : (
+                                            <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-sm font-medium'>
+                                                {network.chainName?.[0] || '?'}
+                                            </div>
+                                        )}
+                                    </button>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
 
@@ -94,9 +149,9 @@ export const TokenSelector = ({
                         <button
                             key={token.tokenContractAddress}
                             onClick={() => onTokenSelect(token)}
-                            className='flex w-full items-center justify-between rounded-xl p-3 hover:bg-gray-50'>
+                            className='flex w-full items-center justify-between overflow-y-scroll rounded-xl p-3 hover:bg-gray-50'>
                             <div className='flex items-center gap-3'>
-                                <div className='size-8 overflow-hidden rounded-full'>
+                                <div className='size-8 overflow-y-scroll rounded-full'>
                                     <Image
                                         src={token.tokenLogoUrl || '/placeholder.svg'}
                                         alt={token.tokenSymbol}
@@ -105,7 +160,7 @@ export const TokenSelector = ({
                                         className='size-full object-cover'
                                     />
                                 </div>
-                                <div className='flex flex-col items-start'>
+                                <div className='flex flex-col items-start overflow-y-scroll'>
                                     <span className='font-medium'>{token.tokenSymbol}</span>
                                     <span className='text-sm text-gray-500'>{token.tokenName}</span>
                                 </div>
