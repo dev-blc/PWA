@@ -1,24 +1,31 @@
 // @ts-check
 
 /** @type {import('next').NextConfig['webpack']} */
-export const configureWebpack = (config, { isServer, nextRuntime }) => {
-    // Config for tests
+export const configureWebpack = (config, { isServer }) => {
+    // Ignore test files
     config.module.rules.push({
         test: /\.test\.tsx?$/,
         loader: 'ignore-loader',
     })
 
-    // Server-side externals
+    // Specific configuration for the server
     if (isServer) {
-        config.externals = [
-            ...(Array.isArray(config.externals) ? config.externals : []),
-            function ({ request }, callback) {
-                if (['@privy-io/server-auth', 'crypto', 'stream', 'querystring', 'path'].includes(request)) {
-                    return callback(null, `commonjs ${request}`)
-                }
-                callback()
-            },
-        ]
+        // Alias to prevent server-side bundling of coinbase-wallet-sdk
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@coinbase/wallet-sdk': false, // Map to false (empty module)
+        }
+    }
+
+    // Fallback configuration for compatibility
+    config.resolve.fallback = {
+        ...config.resolve?.fallback,
+        'fs': false,
+        'net': false,
+        'tls': false,
+        'encoding': false,
+        'bufferutil': false,
+        'utf-8-validate': false,
     }
 
     return config

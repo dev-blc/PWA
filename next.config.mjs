@@ -30,17 +30,23 @@ const baseConfig = {
     compress: true,
 
     // Critical server-side configuration
-    serverComponentsExternalPackages: ['@privy-io/server-auth'],
-    serverExternalPackages: ['@privy-io/server-auth', 'crypto', 'stream', 'querystring', 'path'],
+    serverExternalPackages: [
+        '@privy-io/server-auth',
+        'crypto',
+        'stream',
+        'querystring',
+        'path',
+        '@coinbase/wallet-sdk',
+    ],
 
+    // Build optimizations
     generateBuildId: () => execSync('git rev-parse HEAD').toString().trim(),
     productionBrowserSourceMaps: false,
 
-    modularizeImports: {
-        '@coinbase/wallet-sdk': {
-            transform: '@coinbase/wallet-sdk/dist/{{member}}',
-            skipDefaultConversion: true,
-        },
+    // Chunks optimizations
+    onDemandEntries: {
+        maxInactiveAge: 60 * 60 * 1000,
+        pagesBufferLength: 2,
     },
 }
 
