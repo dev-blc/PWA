@@ -1,12 +1,12 @@
 // @ts-check
 
+import { compilerConfig } from './compiler.mjs'
+import { experimentalConfig } from './experimental.mjs'
 import { imageConfig } from './images.mjs'
 import { getRewriteRules } from './rewrites.mjs'
 import { getSecurityHeaders } from './security.mjs'
-import { configureWebpack } from './webpack.mjs'
 import { withSerwist } from './serwist.mjs'
-import { compilerConfig } from './compiler.mjs'
-import { experimentalConfig } from './experimental.mjs'
+import { configureWebpack } from './webpack.mjs'
 
 const config = {
     images: imageConfig,
