@@ -203,7 +203,7 @@ export default function BottomBarHandler({
             return (
                 <Button
                     key={key}
-                    className='btn-cta active:btn-cta-active mb-3 h-[46px] w-full rounded-[2rem] px-4 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
+                    className='btn-cta active:btn-cta-active mx-4 mb-3 h-[46px] w-full rounded-[2rem] px-4 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'
                     onClick={() => {
                         setIsLoading(true)
                         config.action()
