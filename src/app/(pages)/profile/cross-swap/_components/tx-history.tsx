@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react'
-import { ChevronRight, X } from 'lucide-react'
-import { format } from 'date-fns'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
-import { useRef } from 'react'
+import { format } from 'date-fns'
+import { ChevronRight, X } from 'lucide-react'
 import Image from 'next/image'
+import * as React from 'react'
+import { useRef } from 'react'
 
 interface Transaction {
     id: string
@@ -34,21 +34,27 @@ interface Transaction {
 
 interface TransactionHistoryProps {
     isOpen: boolean
-    onClose: () => void
     transactions: Transaction[]
     networks: string[]
     tokens: string[]
 }
 
-export function TransactionHistory({ isOpen, onClose, transactions, networks, tokens }: TransactionHistoryProps) {
-    const [successfulTransactions, setSuccessfulTransactions] = useState<Transaction[]>([])
-    const txnIds = transactions.map(txn => txn.id)
+export function TransactionHistory({ isOpen, transactions }: TransactionHistoryProps): React.JSX.Element {
+    const [isSheetOpen, setIsSheetOpen] = React.useState(isOpen)
     const sheetRef = useRef<HTMLDivElement>(null)
     const dragStartRef = useRef(0)
     const currentDragRef = useRef(0)
     const isDraggingRef = useRef(false)
-    const animationFrameRef = useRef<number>()
+    const animationFrameRef = useRef<number | null>(null)
     const dragThreshold = 150
+
+    React.useEffect(() => {
+        setIsSheetOpen(isOpen)
+    }, [isOpen])
+
+    const handleClose = () => {
+        setIsSheetOpen(false)
+    }
 
     const updateSheetPosition = (deltaY: number) => {
         if (sheetRef.current) {
@@ -92,7 +98,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
             sheetRef.current.style.transition = 'transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)'
 
             if (currentDragRef.current > dragThreshold) {
-                onClose()
+                handleClose()
             } else {
                 updateSheetPosition(0)
             }
@@ -108,7 +114,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
     }, [])
 
     return (
-        <Sheet open={isOpen} onOpenChange={onClose}>
+        <Sheet open={isSheetOpen} onOpenChange={handleClose}>
             <SheetContent
                 ref={sheetRef}
                 side='bottom'
@@ -128,7 +134,7 @@ export function TransactionHistory({ isOpen, onClose, transactions, networks, to
                 />
                 <SheetHeader className='flex flex-row items-center justify-between pt-4'>
                     <SheetTitle className='text-[18px] font-bold'>Transaction History</SheetTitle>
-                        className='absolute right-6 top-4 text-gray-500 hover:text-gray-700'>
+                    <button className='absolute right-6 top-4 text-gray-500 hover:text-gray-700' onClick={handleClose}>
                         <X className='size-6' />
                     </button>
                 </SheetHeader>
