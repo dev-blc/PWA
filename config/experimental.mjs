@@ -16,9 +16,18 @@ export const experimentalConfig = {
         '@privy-io/react-auth',
         '@privy-io/wagmi',
         '@tanstack/react-query',
+        '@coinbase/wallet-sdk',
+        '@floating-ui/dom',
     ],
     serverActions: {
         allowedOrigins: ['app.poolparty.cc'],
     },
     webVitalsAttribution: ['CLS', 'LCP', 'FID', 'INP', 'TTFB'],
+    optimisticClientCache: true,
+    serverMinification: true,
+    turbo: {
+        loaders: {
+            '.svg': ['@svgr/webpack'],
+        },
+    },
 }
