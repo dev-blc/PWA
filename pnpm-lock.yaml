@@ -189,9 +189,6 @@ importers:
       react-swipeable:
         specifier: 7.0.2
         version: 7.0.2(react@19.0.0)
-      read-bigint:
-        specifier: 0.1.7
-        version: 0.1.7
       serwist:
         specifier: 9.0.11
         version: 9.0.11(typescript@5.7.3)
@@ -210,6 +207,9 @@ importers:
       wagmi:
         specifier: 2.14.11
         version: 2.14.11(@tanstack/query-core@5.66.0)(@tanstack/react-query@5.66.0(react@19.0.0))(@types/react@19.0.8)(bufferutil@4.0.9)(encoding@0.1.13)(react@19.0.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.23.2(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2)
+      zod:
+        specifier: 3.24.2
+        version: 3.24.2
       zsa:
         specifier: 0.6.0
         version: 0.6.0(zod@3.24.2)
@@ -7092,11 +7092,6 @@ packages:
   react@19.0.0:
     resolution: {integrity: sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==}
     engines: {node: '>=0.10.0'}
-
-  read-bigint@0.1.7:
-    resolution: {integrity: sha512-AW7NH0PK6KwAh/OZEoUlaQXB1rv4HZYu0k8JyodNEBjlwHO+JaG18zi2Qpj9if5yvPwxICR24qOC/2cp5iIIeA==}
-    engines: {node: ^10.20.1 || ^12.16.3 || ^14.14.0 || >=15.0.0}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -16775,8 +16770,6 @@ snapshots:
       react: 19.0.0
 
   react@19.0.0: {}
-
-  read-bigint@0.1.7: {}
 
   readable-stream@2.3.8:
     dependencies:
