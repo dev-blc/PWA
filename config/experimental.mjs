@@ -2,11 +2,9 @@
 
 import { inProduction } from '../src/app/_lib/utils/environment.mjs'
 
-const turboEnabled = process.env.TURBO === 'true'
-
 /** @type {import('next').NextConfig['experimental']} */
 export const experimentalConfig = {
-    typedRoutes: !inProduction && !turboEnabled,
+    typedRoutes: !inProduction,
     optimizeServerReact: true,
     optimizePackageImports: [
         'date-fns',
@@ -16,18 +14,13 @@ export const experimentalConfig = {
         '@privy-io/react-auth',
         '@privy-io/wagmi',
         '@tanstack/react-query',
-        '@coinbase/wallet-sdk',
-        '@floating-ui/dom',
     ],
-    serverActions: {
-        allowedOrigins: ['app.poolparty.cc'],
-    },
     webVitalsAttribution: ['CLS', 'LCP', 'FID', 'INP', 'TTFB'],
     optimisticClientCache: true,
     serverMinification: true,
     turbo: {
-        loaders: {
-            '.svg': ['@svgr/webpack'],
+        rules: {
+            '*.svg': ['@svgr/webpack'],
         },
     },
 }

@@ -2,7 +2,13 @@
 
 import bundleAnalyzer from '@next/bundle-analyzer'
 import { execSync } from 'node:child_process'
-import config from './config/index.mjs'
+import { compilerConfig } from './config/compiler.mjs'
+import { experimentalConfig } from './config/experimental.mjs'
+import { imageConfig } from './config/images.mjs'
+import { getRewriteRules } from './config/rewrites.mjs'
+import { getSecurityHeaders } from './config/security.mjs'
+import { withSerwist } from './config/serwist.mjs'
+import { configureWebpack } from './config/webpack.mjs'
 
 const withBundleAnalyzer = bundleAnalyzer({
     enabled: process.env.ANALYZE === 'true',
@@ -10,23 +16,26 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const baseConfig = {
-    compiler: config.compiler,
+    compiler: compilerConfig,
     eslint: { ignoreDuringBuilds: true },
-    experimental: config.experimental,
-    headers: config.security,
-    images: config.images,
+    experimental: experimentalConfig,
+    headers: getSecurityHeaders,
+    images: imageConfig,
     reactStrictMode: true,
-    rewrites: config.rewrites,
-    webpack: config.webpack,
+    rewrites: getRewriteRules,
+    webpack: configureWebpack,
 
-    generateBuildId: () => execSync('git rev-parse HEAD').toString().trim(),
-
-    // Add production optimizations
-    productionBrowserSourceMaps: false,
-    swcMinify: true,
+    // Base configuration
+    poweredByHeader: false,
     compress: true,
 
-    // Optimize large module loading
+    // Critical server-side configuration
+    serverComponentsExternalPackages: ['@privy-io/server-auth'],
+    serverExternalPackages: ['@privy-io/server-auth', 'crypto', 'stream', 'querystring', 'path'],
+
+    generateBuildId: () => execSync('git rev-parse HEAD').toString().trim(),
+    productionBrowserSourceMaps: false,
+
     modularizeImports: {
         '@coinbase/wallet-sdk': {
             transform: '@coinbase/wallet-sdk/dist/{{member}}',
@@ -35,4 +44,4 @@ const baseConfig = {
     },
 }
 
-export default withBundleAnalyzer(config.serwist(baseConfig))
+export default withBundleAnalyzer(withSerwist(baseConfig))
