@@ -1,11 +1,14 @@
 import { useWallets } from '@privy-io/react-auth'
 import { useMutation } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { parseUnits, type Hash } from 'viem'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
-import type { MMError, OKXApprovalData, OKXNetwork, OKXToken } from '../../types'
+import { useSwapContext } from '../../context/SwapContext'
+import type { MMError, OKXApprovalData, OKXNetwork, OKXSwapData, OKXToken } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
+import { useApprovalStatus } from '../services/approval'
 import { toHex } from '../utils/formatters'
 
 interface SwapExecutionParams {
@@ -20,28 +23,48 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
     const { wallets } = useWallets()
     const { data: walletClient } = useWalletClient()
     const publicClient = usePublicClient()
+    const { state, dispatch } = useSwapContext()
+
+    const { isApproved } = useApprovalStatus({
+        tokenContractAddress: fromToken.tokenContractAddress,
+        userAddress: address || '',
+        totalAmount: fromAmount,
+        chainId: Number(fromNetwork.chainId),
+        decimals: Number(fromToken.decimals),
+    })
+
+    // Update approval status whenever it changes
+    useEffect(() => {
+        dispatch({
+            type: 'SET_APPROVAL_STATUS',
+            payload: !!isApproved,
+        })
+    }, [isApproved, dispatch])
 
     const approveMutation = useMutation({
         mutationFn: async () => {
             if (!walletClient || !address) {
                 throw new Error('Please connect your wallet')
             }
+
             const httpClient = HttpClient.getInstance()
             const { path } = CONFIG.API.ENDPOINTS['approve']
             const approveAmount = parseUnits(fromAmount, Number(fromToken.decimals)) * 4n
+
             const params = {
                 chainId: fromNetwork.chainId,
                 tokenContractAddress: fromToken.tokenContractAddress,
                 approveAmount: approveAmount.toString(),
             }
+
             // OKX API request to approve token
             const response = await httpClient.get<OKXApprovalData[]>(path, params)
-            console.log('response', response)
             if (response.code !== '0') {
                 toast.error(response.msg || 'Failed to approve token')
                 toast.message('Please try again')
                 throw new Error(response.msg || 'Failed to approve token')
             }
+
             const provider = await wallets[0].getEthereumProvider()
             // Add network validation
             const currentChainId = await walletClient.getChainId()
@@ -93,53 +116,80 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
         onError: (error: Error) => {
             console.error('Approval error:', error)
             toast.error(error.message || 'Error approving token')
+            dispatch({ type: 'SET_APPROVAL_STATUS', payload: false })
         },
     })
 
     const swapMutation = useMutation({
         mutationFn: async () => {
             if (!walletClient || !address) {
-                throw new Error('Wallet not connected')
+                throw new Error('Walzzzlet not connected')
+            }
+
+            if (!state.isApproved) {
+                throw new Error('Token not approved')
             }
 
             // Ensure we are on the correct network
-            await walletClient.switchChain({
-                id: Number(fromNetwork.chainId),
-            })
-
+            await walletClient
+                .switchChain({
+                    id: Number(fromNetwork.chainId),
+                })
+                .catch(err => {
+                    if ((err as MMError).code === 4902) {
+                        toast.error('Please switch to the correct network')
+                        toast.message('Please add the network to your wallet')
+                        throw new Error('Please add the network to your wallet')
+                    }
+                })
+            const provider = await wallets[0].getEthereumProvider()
+            const httpClient = HttpClient.getInstance()
+            const { path } = CONFIG.API.ENDPOINTS['swap']
             // Prepare the swap parameters
             const amount = parseUnits(fromAmount, Number(fromToken.decimals))
 
+            const params = {
+                fromChainId: fromNetwork.chainId,
+                toChainId: CONFIG.CHAIN.BASE.chainId, //'137', //
+                fromTokenAddress: fromToken.tokenContractAddress,
+                toTokenAddress: CONFIG.CHAIN.BASE.tokens.USDC.tokenContractAddress, //'0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', //
+                amount: amount.toString(),
+                slippage: '0.015',
+                userWalletAddress: wallets[0].address,
+            }
+            // OKX API request to swap tokens
+            const response = await httpClient.get<OKXSwapData[]>(path, params)
+            console.log('response', response)
+            if (response.code !== '0') {
+                toast.error(response.msg || 'Failed to approve token')
+                toast.message('Please try again')
+                throw new Error(response.msg || 'Failed to approve token')
+            }
             // Send the swap transaction
-            const hash = await walletClient.writeContract({
-                address: CONFIG.CHAIN.BASE.routerAddress as `0x${string}`,
-                abi: [
-                    {
-                        name: 'swap',
-                        type: 'function',
-                        stateMutability: 'payable',
-                        inputs: [
-                            { name: 'tokenIn', type: 'address' },
-                            { name: 'tokenOut', type: 'address' },
-                            { name: 'amountIn', type: 'uint256' },
-                            { name: 'minAmountOut', type: 'uint256' },
-                            { name: 'to', type: 'address' },
-                        ],
-                        outputs: [{ name: 'amountOut', type: 'uint256' }],
-                    },
-                ],
-                functionName: 'swap',
-                args: [
-                    fromToken.tokenContractAddress as `0x${string}`,
-                    CONFIG.CHAIN.BASE.tokens.USDC.tokenContractAddress as `0x${string}`,
-                    amount,
-                    // Calcular minAmountOut basado en slippage (1.5%)
-                    (amount * 985n) / 1000n,
-                    address,
-                ],
-                value:
-                    fromToken.tokenContractAddress === CONFIG.CHAIN.BASE.tokens.USDC.tokenContractAddress ? amount : 0n,
-            })
+            const OKXTxData = response.data[0].tx
+            const txRequest = {
+                gas: toHex(BigInt(OKXTxData.gasLimit)),
+                gasPrice: toHex(BigInt(OKXTxData.gasPrice)),
+                from: OKXTxData.from,
+                to: OKXTxData.to,
+                data: OKXTxData.data,
+                value: toHex(BigInt(OKXTxData.value)),
+                chainId: toHex(Number(fromNetwork.chainId)),
+            }
+            console.log('txRequest', txRequest)
+            const hash = await provider
+                .request({
+                    method: 'eth_sendTransaction',
+                    params: [txRequest],
+                })
+                .then(res => {
+                    console.log('res', res)
+                    return res as `0x${string}`
+                })
+                .catch(err => {
+                    console.log('err', err)
+                    throw new Error('Swap transaction failed')
+                })
 
             // Esperar la confirmación
             const receipt = await publicClient?.waitForTransactionReceipt({ hash })

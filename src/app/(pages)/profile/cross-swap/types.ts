@@ -146,6 +146,27 @@ export interface OKXRoute {
     toChainId: string
     toToken: OKXToken
 }
+
+export interface OKXSwapTransaction {
+    data: string
+    from: string
+    gasLimit: string
+    gasPrice: string
+    maxPriorityFeePerGas: string
+    randomKeyAccount: []
+    signatureData: []
+    to: string
+    value: string
+}
+
+export interface OKXSwapData {
+    fromTokenAmount: string
+    minimumReceived: string
+    orderId: string
+    router: OKXBridgeRouter
+    toTokenAmount: string
+    tx: OKXSwapTransaction
+}
 // Request/Response Types
 
 export interface OKXApprovalData {
@@ -162,10 +183,14 @@ export interface ApprovalStatusRequest {
 }
 
 export interface ApprovalStatusResponse {
-    [platformId: number]: {
-        amount: string
-        status?: string
-    }
+    // [platformId: number]: {
+    amount: string
+    needCancelApproveToken: boolean
+    status: number
+    tokenContractAddress: string
+    txId: string
+    type: string
+    // }
 }
 
 export interface TransactionStatusRequest {
