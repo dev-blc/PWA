@@ -2,11 +2,11 @@
 
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
-import type { Network, Token } from '../types'
+import type { Network, OKXToken } from '../types'
 
 interface FromSectionProps {
     fromNetwork: Network
-    fromToken: Token
+    fromToken: OKXToken
     fromAmount: string
     onSelectClick: () => void
     onAmountChange: (amount: string) => void

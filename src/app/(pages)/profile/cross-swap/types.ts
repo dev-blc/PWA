@@ -82,6 +82,14 @@ export interface Token {
     dexTokenApproveAddress?: string
 }
 
+export interface OKXToken {
+    decimals: string
+    tokenContractAddress: string
+    tokenLogoUrl?: string
+    tokenName?: string
+    tokenSymbol: string
+}
+
 // Bridge Types
 export interface BridgeInfo {
     protocol: string
@@ -103,6 +111,36 @@ export interface BridgeInfo {
     slippage: string
 }
 
+export interface OKXBridgeRouter {
+    bridgeId: number
+    bridgeName: string
+    crossChainFee: string
+    crossChainFeeTokenAddress: string
+    crossChainFeeUsd: string
+    otherNativeFee: string
+    otherNativeFeeUsd: string
+}
+export interface OKXRouterList {
+    estimateGasFee: string
+    estimateGasFeeUsd: string
+    estimateTime: string
+    fromChainNetworkFee: string
+    fromDexRouterList: []
+    minimumReceived: string
+    router: OKXBridgeRouter
+    toChainNetworkFee: string
+    toDexRouterList: []
+    toTokenAmount: string
+}
+
+export interface OKXRoute {
+    fromChainId: string
+    fromToken: OKXToken
+    fromTokenAmount: string
+    routerList: OKXRouterList[]
+    toChainId: string
+    toToken: OKXToken
+}
 // Request/Response Types
 export interface ApprovalStatusRequest {
     userWalletAddress: string
@@ -147,8 +185,8 @@ export interface OKXAccountResponse {
 
 // State Management Types
 export interface SwapState {
-    fromNetwork: Network
-    fromToken: Token
+    fromNetwork: OKXNetwork
+    fromToken: OKXToken
     fromAmount: string
     receivedAmount: string
     isApproved: boolean
@@ -157,8 +195,8 @@ export interface SwapState {
 }
 
 export type SwapAction =
-    | { type: 'SET_FROM_NETWORK'; payload: Network }
-    | { type: 'SET_FROM_TOKEN'; payload: Token }
+    | { type: 'SET_FROM_NETWORK'; payload: OKXNetwork }
+    | { type: 'SET_FROM_TOKEN'; payload: OKXToken | null }
     | { type: 'SET_FROM_AMOUNT'; payload: string }
     | { type: 'SET_RECEIVED_AMOUNT'; payload: string }
     | { type: 'SET_APPROVAL_STATUS'; payload: boolean }
@@ -167,8 +205,8 @@ export type SwapAction =
 
 // Route Calculation Types
 export interface RouteCalculationProps {
-    fromNetwork: Network
-    fromToken: Token
+    fromNetwork: OKXNetwork
+    fromToken: OKXToken
     fromAmount: string
     walletAddress: string
     dispatch: React.Dispatch<SwapAction>
@@ -219,10 +257,10 @@ export type SwapResponse = APIResponse<
     }[]
 >
 
-export type ChainsResponse = APIResponse<Chain[]>
+export type ChainsResponse = APIResponse<OKXNetwork[]>
 
-export type TokensResponse = APIResponse<Token[]>
+export type TokensResponse = APIResponse<OKXToken[]>
 
 export interface TokenSelectionProps {
-    fromNetwork: Network
+    fromNetwork: OKXNetwork
 }

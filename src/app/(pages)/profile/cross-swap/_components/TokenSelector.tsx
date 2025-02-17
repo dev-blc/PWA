@@ -2,19 +2,19 @@ import { Input } from '@/app/_components/ui/input'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
 import { Search, X } from 'lucide-react'
 import Image from 'next/image'
-import type { Network, Token } from '../types'
+import type { OKXNetwork, OKXToken } from '../types'
 import { useSheetDrag } from './hooks/useSheetDrag'
 
 export interface TokenSelectorProps {
     isOpen: boolean
     onClose: () => void
-    filteredTokens: Token[]
+    filteredTokens: OKXToken[]
     selectedNetwork: string
     searchQuery: string
     onSearchChange: (value: string) => void
     onNetworkSelect: (network: string) => void
-    onTokenSelect: (token: Token) => void
-    networks: Network[]
+    onTokenSelect: (token: OKXToken) => void
+    networks: OKXNetwork[]
 }
 
 export const TokenSelector = ({
@@ -89,7 +89,7 @@ export const TokenSelector = ({
                 </div>
 
                 {/* Token list */}
-                <div className='mt-6 space-y-2'>
+                <div className='scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 mt-6 space-y-2 overflow-y-scroll'>
                     {filteredTokens.map(token => (
                         <button
                             key={token.tokenContractAddress}

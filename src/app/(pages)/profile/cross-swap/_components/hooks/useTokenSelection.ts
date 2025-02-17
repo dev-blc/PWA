@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import type { Network, Token, TokensResponse } from '../../types'
+import type { Network, OKXToken, Token, TokensResponse } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
 
@@ -18,13 +18,13 @@ export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
         data: tokens,
         isLoading,
         error,
-        refetch
-    } = useQuery<Token[], Error>({
-        queryKey: ['tokens', fromNetwork.chainId, selectedNetwork],
+        refetch,
+    } = useQuery<OKXToken[], Error>({
+        queryKey: ['tokens', selectedNetwork],
         queryFn: async (): Promise<Token[]> => {
             const { path } = CONFIG.API.ENDPOINTS['tokens/all']
             const response = await httpClient.get<TokensResponse>(path, {
-                chainId: selectedNetwork === 'all' ? fromNetwork.chainId : selectedNetwork,
+                chainId: selectedNetwork,
             })
 
             if (response.code !== '0') {
@@ -33,23 +33,23 @@ export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
 
             return response.data
         },
-        enabled: !!selectedNetwork,
-        staleTime: 5 * 60 * 1000,
+        enabled: !!selectedNetwork && selectedNetwork !== 'all',
     })
 
     // Update selected network when fromNetwork changes
     useEffect(() => {
         setSelectedNetwork(fromNetwork.chainId)
-    }, [fromNetwork])
+        void refetch()
+    }, [fromNetwork, refetch])
 
-    const filteredTokens = tokens?.filter(token => {
-        const searchLower = searchQuery.toLowerCase()
-        const matchesSearch =
-            token.tokenSymbol.toLowerCase().includes(searchLower) ||
-            token.tokenName.toLowerCase().includes(searchLower)
-        const matchesNetwork = selectedNetwork === 'all' || token.chainId === selectedNetwork
-        return matchesSearch && matchesNetwork
-    }) ?? []
+    const filteredTokens =
+        tokens?.filter(token => {
+            const searchLower = searchQuery.toLowerCase()
+            const matchesSearch =
+                token.tokenSymbol.toLowerCase().includes(searchLower) ||
+                token.tokenName.toLowerCase().includes(searchLower)
+            return matchesSearch
+        }) ?? []
 
     return {
         tokens: tokens ?? [],

@@ -2,12 +2,12 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { parseUnits, type Hash } from 'viem'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
-import type { Network, Token } from '../../types'
+import type { OKXNetwork, OKXToken } from '../../types'
 import { CONFIG } from '../config'
 
 interface SwapExecutionParams {
-    fromNetwork: Network
-    fromToken: Token
+    fromNetwork: OKXNetwork
+    fromToken: OKXToken
     fromAmount: string
     onSwapComplete: () => void
 }

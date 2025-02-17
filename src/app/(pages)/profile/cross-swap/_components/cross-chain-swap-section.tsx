@@ -6,7 +6,6 @@ import { useWallets } from '@privy-io/react-auth'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSwapContext } from '../context/SwapContext'
-import type { Token } from '../types'
 import { ActionButton } from './ActionButton'
 import { FromSection } from './FromSection'
 import { useNetworkFetching } from './hooks/useNetworkFetching'
@@ -17,6 +16,7 @@ import { useTokenSelection } from './hooks/useTokenSelection'
 import { ToSection } from './ToSection'
 // import WalletAccountSection from './wallet-account-section'
 import dynamic from 'next/dynamic'
+import type { OKXToken } from '../types'
 import type { BridgeInfoCardProps } from './bridge-card'
 import type { TokenSelectorProps } from './TokenSelector'
 
@@ -47,16 +47,16 @@ const CrossChainSwapSection = () => {
     const { selectedNetwork, searchQuery, setSelectedNetwork, setSearchQuery, filteredTokens } = useTokenSelection({
         fromNetwork: state.fromNetwork,
     })
-    console.log(
-        'd;;;;;;ata',
-        state.fromNetwork,
-        state.fromToken,
-        state.fromAmount,
-        wallets[0]?.address,
-        selectedNetwork,
-        searchQuery,
-        filteredTokens,
-    )
+    // console.log(
+    //     'd;;;;;;ata',
+    //     state.fromNetwork,
+    //     state.fromToken,
+    //     state.fromAmount,
+    //     wallets[0]?.address,
+    //     selectedNetwork,
+    //     searchQuery,
+    //     filteredTokens,
+    // )
     useRouteCalculation({
         fromNetwork: state.fromNetwork,
         fromToken: state.fromToken,
@@ -74,7 +74,7 @@ const CrossChainSwapSection = () => {
 
     const { sheetRef } = useSheetDrag(() => setIsSelectOpen(false))
 
-    const handleFromTokenSelect = (token: Token) => {
+    const handleFromTokenSelect = (token: OKXToken) => {
         dispatch({ type: 'SET_FROM_TOKEN', payload: token })
         setIsSelectOpen(false)
     }
@@ -103,15 +103,20 @@ const CrossChainSwapSection = () => {
     }
 
     const handleNetworkSelect = (networkId: string) => {
+        if (networkId === 'all') {
+            return
+        }
+
         const selectedNetwork = fetchedNetworks.find(n => n.chainId === networkId)
         if (selectedNetwork) {
             dispatch({ type: 'SET_FROM_NETWORK', payload: selectedNetwork })
-            setSelectedNetwork(networkId)
             // Reset token-related states when network changes
+            dispatch({ type: 'SET_FROM_TOKEN', payload: state.fromToken }) // Reset token selection
             dispatch({ type: 'SET_FROM_AMOUNT', payload: '0.0' })
             dispatch({ type: 'SET_RECEIVED_AMOUNT', payload: '0.0' })
             dispatch({ type: 'SET_APPROVAL_STATUS', payload: false })
             dispatch({ type: 'SET_ROUTER_INFO', payload: null })
+            setSelectedNetwork(networkId)
         }
     }
 
