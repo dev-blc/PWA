@@ -23,6 +23,11 @@ export interface APIError {
     data?: unknown
 }
 
+export interface MMError {
+    code: number
+    msg: string
+    stack?: unknown
+}
 // Chain and Network Types
 export interface NativeCurrency {
     name: string
@@ -142,6 +147,13 @@ export interface OKXRoute {
     toToken: OKXToken
 }
 // Request/Response Types
+
+export interface OKXApprovalData {
+    data: string
+    dexContractAddress: string
+    gasLimit: string
+    gasPrice: string
+}
 export interface ApprovalStatusRequest {
     userWalletAddress: string
     tokenContractAddress: string
