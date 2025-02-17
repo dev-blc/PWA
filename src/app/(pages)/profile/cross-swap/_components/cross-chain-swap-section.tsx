@@ -44,11 +44,19 @@ const CrossChainSwapSection = () => {
     const [isSwapping, setIsSwapping] = useState(false)
 
     const { fetchedNetworks } = useNetworkFetching(wallets)
-
     const { selectedNetwork, searchQuery, setSelectedNetwork, setSearchQuery, filteredTokens } = useTokenSelection({
         fromNetwork: state.fromNetwork,
     })
-
+    console.log(
+        'd;;;;;;ata',
+        state.fromNetwork,
+        state.fromToken,
+        state.fromAmount,
+        wallets[0]?.address,
+        selectedNetwork,
+        searchQuery,
+        filteredTokens,
+    )
     useRouteCalculation({
         fromNetwork: state.fromNetwork,
         fromToken: state.fromToken,
@@ -94,6 +102,19 @@ const CrossChainSwapSection = () => {
         }
     }
 
+    const handleNetworkSelect = (networkId: string) => {
+        const selectedNetwork = fetchedNetworks.find(n => n.chainId === networkId)
+        if (selectedNetwork) {
+            dispatch({ type: 'SET_FROM_NETWORK', payload: selectedNetwork })
+            setSelectedNetwork(networkId)
+            // Reset token-related states when network changes
+            dispatch({ type: 'SET_FROM_AMOUNT', payload: '0.0' })
+            dispatch({ type: 'SET_RECEIVED_AMOUNT', payload: '0.0' })
+            dispatch({ type: 'SET_APPROVAL_STATUS', payload: false })
+            dispatch({ type: 'SET_ROUTER_INFO', payload: null })
+        }
+    }
+
     return (
         <div className='relative min-h-screen overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
             <div className='mx-auto w-full max-w-md space-y-4 overflow-y-scroll p-1 pb-24'>
@@ -106,7 +127,7 @@ const CrossChainSwapSection = () => {
                             selectedNetwork={selectedNetwork}
                             searchQuery={searchQuery}
                             onSearchChange={setSearchQuery}
-                            onNetworkSelect={setSelectedNetwork}
+                            onNetworkSelect={handleNetworkSelect}
                             onTokenSelect={handleFromTokenSelect}
                             networks={fetchedNetworks}
                         />

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Network, Token, TokensResponse } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
@@ -9,7 +9,7 @@ interface TokenSelectionProps {
 }
 
 export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
-    const [selectedNetwork, setSelectedNetwork] = useState<string>('all')
+    const [selectedNetwork, setSelectedNetwork] = useState<string>(fromNetwork.chainId)
     const [searchQuery, setSearchQuery] = useState<string>('')
 
     const httpClient = HttpClient.getInstance()
@@ -18,37 +18,38 @@ export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
         data: tokens,
         isLoading,
         error,
+        refetch
     } = useQuery<Token[], Error>({
-        queryKey: ['tokens', fromNetwork.chainId],
+        queryKey: ['tokens', fromNetwork.chainId, selectedNetwork],
         queryFn: async (): Promise<Token[]> => {
             const { path } = CONFIG.API.ENDPOINTS['tokens/all']
             const response = await httpClient.get<TokensResponse>(path, {
-                chainId: fromNetwork.chainId,
+                chainId: selectedNetwork === 'all' ? fromNetwork.chainId : selectedNetwork,
             })
 
             if (response.code !== '0') {
                 throw new Error(response.msg || 'Failed to fetch tokens')
             }
 
-            if (!Array.isArray(response.data)) {
-                throw new Error('Invalid response format')
-            }
-
             return response.data
         },
+        enabled: !!selectedNetwork,
         staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
     })
 
-    const filteredTokens =
-        tokens?.filter(token => {
-            const matchesNetwork = selectedNetwork === 'all' || token.chainId === fromNetwork.chainId
-            const searchLower = searchQuery.toLowerCase()
-            const matchesSearch =
-                token.tokenSymbol.toLowerCase().includes(searchLower) ||
-                token.tokenName.toLowerCase().includes(searchLower)
-            return matchesNetwork && matchesSearch
-        }) ?? []
+    // Update selected network when fromNetwork changes
+    useEffect(() => {
+        setSelectedNetwork(fromNetwork.chainId)
+    }, [fromNetwork])
+
+    const filteredTokens = tokens?.filter(token => {
+        const searchLower = searchQuery.toLowerCase()
+        const matchesSearch =
+            token.tokenSymbol.toLowerCase().includes(searchLower) ||
+            token.tokenName.toLowerCase().includes(searchLower)
+        const matchesNetwork = selectedNetwork === 'all' || token.chainId === selectedNetwork
+        return matchesSearch && matchesNetwork
+    }) ?? []
 
     return {
         tokens: tokens ?? [],

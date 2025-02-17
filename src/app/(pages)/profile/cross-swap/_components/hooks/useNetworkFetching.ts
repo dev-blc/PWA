@@ -1,7 +1,7 @@
 import type { ConnectedWallet } from '@privy-io/react-auth'
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { Chain, Network } from '../../types'
+import type { Chain, Network, OKXNetwork } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
 import { handleAPIError } from '../utils/errors'
@@ -22,10 +22,11 @@ export const useNetworkFetching = (wallets: ConnectedWallet[]) => {
         queryKey: ['networks', wallets[0]?.address],
         queryFn: async () => {
             const { path } = CONFIG.API.ENDPOINTS['chains']
-            const response = await httpClient.get<Chain[]>(path)
-
+            const response = await httpClient.get<OKXNetwork[]>(path)
+            console.log('////////response', response)
             if (response.code === '0' && Array.isArray(response.data)) {
-                return response.data.map(chainToNetwork)
+                console.log('////////response.data', response.data)
+                return response.data //response.data.map(chainToNetwork)
             }
 
             throw new Error(response.msg || 'Failed to fetch networks')
@@ -40,7 +41,7 @@ export const useNetworkFetching = (wallets: ConnectedWallet[]) => {
         },
         gcTime: 10 * 60 * 1000, // 10 minutes
     })
-
+    console.log('////////fetchedNetworks', fetchedNetworks)
     // Handle errors outside of the query options
     if (fetchedNetworks === undefined) {
         const error = handleAPIError(new Error('Failed to fetch networks'))

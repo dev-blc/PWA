@@ -47,9 +47,12 @@ export class HttpClient {
      * @returns {Promise<APIResponse<T>>} The API response
      */
     async get<T>(path: string, params?: Record<string, unknown>): Promise<APIResponse<T>> {
+        console.log('GET', path, params)
         const { signature, timestamp } = createSignature('GET', path, params)
         const headers = createHeaders(signature, timestamp)
         const url = this.buildUrl(path, params)
+        console.log('URL', url)
+        console.log('HEADERS', headers)
 
         return this.request<T>('GET', url, undefined, headers)
     }
