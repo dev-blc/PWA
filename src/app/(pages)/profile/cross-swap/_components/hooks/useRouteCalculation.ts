@@ -15,11 +15,11 @@ export function useRouteCalculation({
     dispatch,
 }: RouteCalculationProps) {
     const { isApproved } = useApprovalStatus({
-        tokenContractAddress: fromToken.tokenContractAddress,
+        tokenContractAddress: fromToken?.tokenContractAddress || '',
         userAddress: walletAddress || '',
         totalAmount: fromAmount,
         chainId: Number(fromNetwork.chainId),
-        decimals: Number(fromToken.decimals),
+        decimals: Number(fromToken?.decimals),
     })
     const calculateRoute = useCallback(async () => {
         if (!fromAmount || fromAmount === '0.0' || !walletAddress) {
@@ -37,9 +37,9 @@ export function useRouteCalculation({
             const params = {
                 fromChainId: fromNetwork.chainId,
                 toChainId: CONFIG.CHAIN.BASE.chainId,
-                fromTokenAddress: fromToken.tokenContractAddress,
+                fromTokenAddress: fromToken?.tokenContractAddress,
                 toTokenAddress: CONFIG.CHAIN.BASE.tokens.USDC.tokenContractAddress,
-                amount: toDecimals(Number(fromAmount), Number(fromToken.decimals)),
+                amount: toDecimals(Number(fromAmount), Number(fromToken?.decimals)),
                 slippage: '0.015',
             }
 
@@ -62,7 +62,7 @@ export function useRouteCalculation({
                         rate: {
                             from: {
                                 amount: fromAmount,
-                                token: fromToken.tokenSymbol,
+                                token: fromToken?.tokenSymbol || '',
                             },
                             to: {
                                 amount: toWholeNumber(

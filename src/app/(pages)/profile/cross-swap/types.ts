@@ -193,6 +193,31 @@ export interface ApprovalStatusResponse {
     // }
 }
 
+export interface Transaction {
+    id: string
+    date: string
+    fromChain: {
+        name: string
+        chainId: string
+    }
+    toChain: {
+        name: string
+        chainId: string
+    }
+    amount: string
+    toAmount: string
+    fromToken: {
+        name: string
+        logo: string
+    }
+    toToken: {
+        name: string
+        logo: string
+    }
+    toTxnHash: string
+    status: string
+}
+
 export interface TransactionStatusRequest {
     hash: string
 }
@@ -223,12 +248,13 @@ export interface OKXAccountResponse {
 // State Management Types
 export interface SwapState {
     fromNetwork: OKXNetwork
-    fromToken: OKXToken
+    fromToken: OKXToken | null
     fromAmount: string
     receivedAmount: string
     isApproved: boolean
     routerInfo: BridgeInfo | null
     isLoading?: boolean
+    transactions: Transaction[]
 }
 
 export type SwapAction =
@@ -239,11 +265,12 @@ export type SwapAction =
     | { type: 'SET_APPROVAL_STATUS'; payload: boolean }
     | { type: 'SET_ROUTER_INFO'; payload: BridgeInfo | null }
     | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'SET_HISTORY'; payload: Transaction[] }
 
 // Route Calculation Types
 export interface RouteCalculationProps {
     fromNetwork: OKXNetwork
-    fromToken: OKXToken
+    fromToken: OKXToken | null
     fromAmount: string
     walletAddress: string
     dispatch: React.Dispatch<SwapAction>

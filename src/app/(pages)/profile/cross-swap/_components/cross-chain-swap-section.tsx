@@ -3,22 +3,21 @@
 import { Sheet, SheetContent } from '@/app/_components/ui/sheet'
 import { useWallets } from '@privy-io/react-auth'
 // import { toNumber } from 'lodash'
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSwapContext } from '../context/SwapContext'
+import type { OKXToken } from '../types'
 import { ActionButton } from './ActionButton'
+import type { BridgeInfoCardProps } from './bridge-card'
 import { FromSection } from './FromSection'
 import { useNetworkFetching } from './hooks/useNetworkFetching'
 import { useRouteCalculation } from './hooks/useRouteCalculation'
 import { useSheetDrag } from './hooks/useSheetDrag'
 import { useSwapExecution } from './hooks/useSwapExecution'
 import { useTokenSelection } from './hooks/useTokenSelection'
-import { ToSection } from './ToSection'
-// import WalletAccountSection from './wallet-account-section'
-import dynamic from 'next/dynamic'
-import type { OKXToken } from '../types'
-import type { BridgeInfoCardProps } from './bridge-card'
 import type { TokenSelectorProps } from './TokenSelector'
+import { ToSection } from './ToSection'
 
 // Componentes dinámicos con tipos correctos
 const TokenSelectorDynamic = dynamic<TokenSelectorProps>(
@@ -122,6 +121,7 @@ const CrossChainSwapSection = () => {
 
     return (
         <div className='relative min-h-screen overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+            {/* <WalletAccountSection /> */}
             <div className='mx-auto w-full max-w-md space-y-4 overflow-y-scroll p-1 pb-24'>
                 <Sheet open={isSelectOpen} onOpenChange={setIsSelectOpen}>
                     <SheetContent ref={sheetRef} side='bottom' className='h-[85vh] touch-none rounded-t-[24px] p-4'>
@@ -139,6 +139,14 @@ const CrossChainSwapSection = () => {
                     </SheetContent>
                 </Sheet>
 
+                {/* <TransactionHistory
+                    isOpen={isHistoryOpen}
+                    onClose={() => setIsHistoryOpen(false)}
+                    transactions={successfulTransactions}
+                    networks={fetchedNetworks}
+                    tokens={fetchedTokens}
+                /> */}
+
                 <div className='detail_card mx-auto w-full rounded-[24px]'>
                     <FromSection
                         fromNetwork={state.fromNetwork}
@@ -152,7 +160,6 @@ const CrossChainSwapSection = () => {
 
                 {state.routerInfo && <BridgeInfoCardDynamic bridgeInfo={state.routerInfo} />}
             </div>
-
             <ActionButton
                 isApproved={state.isApproved}
                 onApproveAction={handleApprove}
