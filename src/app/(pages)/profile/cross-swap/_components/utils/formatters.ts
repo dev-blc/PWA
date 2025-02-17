@@ -59,7 +59,7 @@ export const toWholeNumber = (amount: number, decimals: number): number => {
  * @param {number} value - The number to convert
  * @returns {string} Hexadecimal string representation
  */
-export const toHex = (value: number): string => {
+export const toHex = (value: number | bigint): string => {
     return `0x${value.toString(16)}`
 }
 
