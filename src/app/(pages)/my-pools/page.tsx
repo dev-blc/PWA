@@ -6,7 +6,6 @@ import { getMyPoolsPageAction } from './actions'
 
 // Mark explicitly as dynamic
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge' // Optional: use edge runtime for better performance
 
 export default async function MyPoolsPage() {
     const { upcomingPools, pastPools } = await getMyPoolsPageAction()

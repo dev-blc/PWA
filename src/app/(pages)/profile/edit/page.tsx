@@ -9,7 +9,6 @@ import ProfileForm from './_components/profile-form'
 type UserInfo = Pick<Tables<'users'>, 'avatar' | 'displayName'> | null
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
 
 export default async function EditProfilePage({ searchParams }: { searchParams: { new?: string } }) {
     try {
