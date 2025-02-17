@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import RetryDialog from './_components/retry-dialog'
-import { FormFieldKey, formFields } from './form-fields'
+import { formFields } from './form-fields'
 import { useCreatePool } from './use-create-pool'
 
 export default function CreatePoolForm() {
@@ -81,7 +81,7 @@ export default function CreatePoolForm() {
                     type='submit'
                     form='pool-form'
                     disabled={isButtonDisabled}
-                    className='btn-cta shadow-button active:shadow-button-push mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base leading-normal font-semibold text-white'>
+                    className='btn-cta mb-3 h-[46px] w-full rounded-[2rem] px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-button active:shadow-button-push'>
                     {isProcessing ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : null}
                     {isProcessing
                         ? isPending
@@ -139,12 +139,12 @@ export default function CreatePoolForm() {
                 }}
                 className='flex w-full flex-col gap-6 py-6'>
                 {formFields.map(field => {
-                    const errors = formErrors[field.key as FormFieldKey] || []
+                    const errors = formErrors[field.key] || []
 
                     return (
                         <section key={field.key} className='flex flex-1 flex-col'>
                             <Label className='text-base font-medium text-[#090909]'>{field.label}</Label>
-                            <p className='mt-1.5 mb-4 text-xs font-medium text-[#b2b2b2]'>{field.description}</p>
+                            <p className='mb-4 mt-1.5 text-xs font-medium text-[#b2b2b2]'>{field.description}</p>
                             <field.component name={field.name} />
                             {errors.length > 0 && <p className='mt-1 text-xs text-red-500'>{errors.join(', ')}</p>}
                         </section>
@@ -157,7 +157,10 @@ export default function CreatePoolForm() {
             <RetryDialog
                 open={showRetryDialog}
                 onOpenChange={open => {
-                    if (!open) handleRetryDialogClose()
+                    if (!open)
+                        handleRetryDialogClose().catch(error => {
+                            console.error('Error closing retry dialog', error)
+                        })
                 }}
                 onRetry={handleRetry}
                 onCancel={handleRetryDialogClose}

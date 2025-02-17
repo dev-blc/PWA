@@ -1,42 +1,50 @@
-
 import 'server-only'
 
+import { CONFIG } from '@/app/(pages)/profile/cross-swap/_components/config'
+import type { APIResponse } from '@/app/(pages)/profile/cross-swap/types'
 import { NextResponse } from 'next/server'
 
+async function fetchFromOKX<T>(endpoint: keyof typeof CONFIG.API.ENDPOINTS, data: Record<string, unknown>) {
+    const { BASE_URL, ENDPOINTS, HEADERS } = CONFIG.API
+    const { path, call } = ENDPOINTS[endpoint]
 
-import crypto from 'crypto'
-import type { SignOptions } from 'jsonwebtoken'
-import { sign } from 'jsonwebtoken'
-import { API_paths, sendGetRequest } from '@/app/(pages)/profile/cross-swap/_components/utils'
-export async function POST(req: Request) {
-    console.log('API Hit')
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const requestData = await req.json()
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const {  address, chains } = requestData
-    console.log('req:', requestData)
-
-    const { path, call } = API_paths['history']
-    console.log('path', path)
-    const response = await sendGetRequest(path, requestData);
-    console.log('response', response)
-    if (!response.code === '0') {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    const url = new URL(path, BASE_URL)
+    if (call === 'GET') {
+        Object.entries(data).forEach(([key, value]) => {
+            url.searchParams.append(key, String(value))
+        })
     }
 
-    const data = await response.data;
-    // eslint-disable-next-line
-    if (response.msg != 'success') {
-        // eslint-disable-next-line
-        console.error('Error:', response.message)
-        // eslint-disable-next-line
-        return NextResponse.json({ message: response.message }, { status: 500 })
-    } else {
-        // Success
-        return NextResponse.json({ data }, { status: 200 })
+    const response = await fetch(url, {
+        method: call,
+        headers: HEADERS as Record<string, string>,
+        body: call === 'POST' ? JSON.stringify(data) : undefined,
+    })
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
     }
+
+    return response.json() as Promise<APIResponse<T>>
 }
 
-// eslint-disable-next-line
+export async function POST(req: Request) {
+    try {
+        const requestData = (await req.json()) as Record<string, unknown>
 
+        const response = await fetchFromOKX<unknown>('history', requestData)
+
+        if (response.code !== '0') {
+            return NextResponse.json({ message: 'Error in the server response' }, { status: 400 })
+        }
+
+        if (response.msg !== 'success') {
+            return NextResponse.json({ message: response.msg || 'Unknown error' }, { status: 500 })
+        }
+
+        return NextResponse.json({ data: response.data }, { status: 200 })
+    } catch (error) {
+        console.error('Error in the API:', error)
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
+    }
+}
