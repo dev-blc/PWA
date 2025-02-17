@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import type { OKXRoute, RouteCalculationProps } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
+import { useApprovalStatus } from '../services/approval'
 import { handleAPIError } from '../utils/errors'
 import { formatTime, toDecimals, toWholeNumber } from '../utils/formatters'
 
@@ -13,6 +14,13 @@ export function useRouteCalculation({
     walletAddress,
     dispatch,
 }: RouteCalculationProps) {
+    const { isApproved } = useApprovalStatus({
+        tokenContractAddress: fromToken.tokenContractAddress,
+        userAddress: walletAddress || '',
+        totalAmount: fromAmount,
+        chainId: Number(fromNetwork.chainId),
+        decimals: Number(fromToken.decimals),
+    })
     const calculateRoute = useCallback(async () => {
         if (!fromAmount || fromAmount === '0.0' || !walletAddress) {
             dispatch({ type: 'SET_RECEIVED_AMOUNT', payload: '0.0' })
@@ -72,6 +80,11 @@ export function useRouteCalculation({
                         slippage: '0.015',
                     },
                 })
+
+                dispatch({
+                    type: 'SET_APPROVAL_STATUS',
+                    payload: !!isApproved,
+                })
             } else {
                 throw new Error(response.msg || 'No routes available')
             }
@@ -84,7 +97,7 @@ export function useRouteCalculation({
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false })
         }
-    }, [fromNetwork, fromToken, fromAmount, walletAddress, dispatch])
+    }, [fromNetwork, fromToken, fromAmount, walletAddress, dispatch, isApproved])
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {

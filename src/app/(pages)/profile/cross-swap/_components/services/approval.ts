@@ -1,18 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { erc20Abi, formatUnits, parseUnits } from 'viem'
-import { useReadContract, useWatchContractEvent } from 'wagmi'
-import type { ApprovalStatusRequest, ApprovalStatusResponse } from '../../types'
+import { useEffect, useState } from 'react'
+import { formatUnits, parseUnits } from 'viem'
+import type { APIResponse, ApprovalStatusRequest, ApprovalStatusResponse } from '../../types'
 import { CONFIG } from '../config'
 import { APIError } from '../utils/errors'
-
-/**
- * Service for handling token approval status checks
- */
 
 interface UseApprovalStatusProps {
     tokenContractAddress: string
     userAddress: string
     totalAmount: string
+    chainId: number
     decimals: number
 }
 
@@ -20,74 +17,64 @@ export const useApprovalStatus = ({
     tokenContractAddress,
     userAddress,
     totalAmount,
+    chainId,
     decimals,
 }: UseApprovalStatusProps) => {
-    // Read the allowance from the contract
-    const { data: allowance, error: contractError } = useReadContract({
-        address: tokenContractAddress as `0x${string}`,
-        abi: erc20Abi,
-        functionName: 'allowance',
-        args: [userAddress as `0x${string}`, CONFIG.CHAIN.BASE.routerAddress],
-    })
+    const [allowance, setAllowance] = useState(false)
+    const [isEnabled, setIsEnabled] = useState(false)
+    const [allowanceAmount, setAllowanceAmount] = useState('0')
+    useEffect(() => {
+        if (Number(totalAmount) > 0) {
+            setIsEnabled(true)
+        } else {
+            setIsEnabled(false)
+        }
+    }, [totalAmount])
 
-    // Listen to Approval events to update the state
-    useWatchContractEvent({
-        address: tokenContractAddress as `0x${string}`,
-        abi: erc20Abi,
-        eventName: 'Approval',
-        args: {
-            owner: userAddress as `0x${string}`,
-            spender: CONFIG.CHAIN.BASE.routerAddress,
-        },
-        onLogs(logs) {
-            console.log('New approval event:', logs)
-        },
-    })
-
-    // Fallback to the API if necessary
     const { data: apiApprovalStatus, error: apiError } = useQuery({
-        queryKey: ['approvalStatus', tokenContractAddress, userAddress, totalAmount, decimals],
+        queryKey: ['approvalStatus', tokenContractAddress, userAddress, totalAmount, chainId, decimals],
         queryFn: async (): Promise<boolean> => {
             const { path } = CONFIG.API.ENDPOINTS['approval/status']
             const params: ApprovalStatusRequest = {
                 userWalletAddress: userAddress,
                 tokenContractAddress,
-                chainId: Number(CONFIG.CHAIN.BASE.chainId),
+                chainId: chainId,
                 defiPlatformIds: CONFIG.CHAIN.BASE.platformId,
             }
-
             const response = await fetch(
                 `${CONFIG.API.BASE_URL}${path}?${new URLSearchParams(params as unknown as URLSearchParams)}`,
                 { headers: CONFIG.API.HEADERS as HeadersInit },
             )
-
             if (!response.ok) {
                 throw new APIError('UNKNOWN', 'Failed to fetch approval status')
             }
 
-            const data = (await response.json()) as ApprovalStatusResponse
-            const approvedAmount = data[CONFIG.CHAIN.BASE.platformId]?.amount
-
+            const data = ((await response.json()) as APIResponse<ApprovalStatusResponse[]>).data[11]
+            const approvedAmount = data.amount
             if (!approvedAmount) {
-                throw new APIError('UNKNOWN', 'No approval amount found for platform')
+                setAllowance(false)
+                return false
             }
-
-            return BigInt(approvedAmount) >= parseUnits(totalAmount, decimals)
+            setAllowanceAmount(approvedAmount)
+            const isAllowance = BigInt(approvedAmount) >= parseUnits(totalAmount, decimals)
+            setAllowance(isAllowance)
+            return isAllowance
         },
-        enabled: !allowance, // Solo ejecutar si no tenemos allowance del contrato
+        enabled: isEnabled, //!allowance, // Execute only if enabled and no allowance
         staleTime: 30 * 1000,
         gcTime: 5 * 60 * 1000,
         retry: 2,
     })
 
-    const isApproved = allowance ? allowance >= parseUnits(totalAmount, decimals) : (apiApprovalStatus ?? false)
-
-    const approvedAmount = allowance ? formatUnits(allowance, decimals) : '0'
+    const isApproved = allowance
+        ? Number(allowanceAmount) >= parseUnits(totalAmount, decimals)
+        : (apiApprovalStatus ?? false)
+    const approvedAmount = allowance ? formatUnits(BigInt(allowanceAmount), decimals) : '0'
 
     return {
         isApproved,
         approvedAmount,
-        error: contractError || apiError,
+        error: apiError,
         isLoading: !allowance && !apiApprovalStatus,
         allowance,
         apiApprovalStatus,
