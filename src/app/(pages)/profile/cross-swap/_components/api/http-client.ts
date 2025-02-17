@@ -50,7 +50,6 @@ export class HttpClient {
         const { signature, timestamp } = createSignature('GET', path, params)
         const headers = createHeaders(signature, timestamp)
         const url = this.buildUrl(path, params)
-        console.log('URL', url)
 
         return this.request<T>('GET', url, undefined, headers)
     }

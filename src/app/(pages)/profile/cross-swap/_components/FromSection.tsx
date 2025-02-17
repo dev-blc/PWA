@@ -6,7 +6,7 @@ import type { Network, OKXToken } from '../types'
 
 interface FromSectionProps {
     fromNetwork: Network
-    fromToken: OKXToken
+    fromToken: OKXToken | null
     fromAmount: string
     onSelectClick: () => void
     onAmountChange: (amount: string) => void
@@ -40,14 +40,14 @@ export function FromSection({
                 <button onClick={onSelectClick} className='flex items-center gap-2'>
                     <div className='size-8 overflow-hidden rounded-xl bg-[#d9d9d9]'>
                         <Image
-                            src={fromToken.tokenLogoUrl || '/placeholder.svg'}
-                            alt={fromToken.tokenName}
+                            src={fromToken?.tokenLogoUrl || '/placeholder.svg'}
+                            alt={fromToken?.tokenName || ''}
                             width={32}
                             height={32}
                             className='size-full object-cover'
                         />
                     </div>
-                    <span className='text-xl font-bold'>{fromToken.tokenSymbol}</span>
+                    <span className='text-xl font-bold'>{fromToken?.tokenSymbol}</span>
                     <ChevronDown className='ml-1 size-5 text-[#8f8f8f]' />
                 </button>
                 <input

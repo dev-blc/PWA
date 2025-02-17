@@ -13,7 +13,7 @@ import { toHex } from '../utils/formatters'
 
 interface SwapExecutionParams {
     fromNetwork: OKXNetwork
-    fromToken: OKXToken
+    fromToken: OKXToken | null
     fromAmount: string
     onSwapComplete: () => void
 }
@@ -26,11 +26,11 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
     const { state, dispatch } = useSwapContext()
 
     const { isApproved } = useApprovalStatus({
-        tokenContractAddress: fromToken.tokenContractAddress,
+        tokenContractAddress: fromToken?.tokenContractAddress || '',
         userAddress: address || '',
         totalAmount: fromAmount,
         chainId: Number(fromNetwork.chainId),
-        decimals: Number(fromToken.decimals),
+        decimals: Number(fromToken?.decimals),
     })
 
     // Update approval status whenever it changes
@@ -49,11 +49,11 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
 
             const httpClient = HttpClient.getInstance()
             const { path } = CONFIG.API.ENDPOINTS['approve']
-            const approveAmount = parseUnits(fromAmount, Number(fromToken.decimals)) * 4n
+            const approveAmount = parseUnits(fromAmount, Number(fromToken?.decimals)) * 4n
 
             const params = {
                 chainId: fromNetwork.chainId,
-                tokenContractAddress: fromToken.tokenContractAddress,
+                tokenContractAddress: fromToken?.tokenContractAddress,
                 approveAmount: approveAmount.toString(),
             }
 
@@ -84,7 +84,7 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
                 gas: toHex(BigInt(approvalData.gasLimit)),
                 gasPrice: toHex(BigInt(approvalData.gasPrice)),
                 from: wallets[0].address,
-                to: fromToken.tokenContractAddress,
+                to: fromToken?.tokenContractAddress,
                 data: approvalData.data,
                 value: '0x0',
             }
@@ -146,12 +146,12 @@ export const useSwapExecution = ({ fromNetwork, fromToken, fromAmount, onSwapCom
             const httpClient = HttpClient.getInstance()
             const { path } = CONFIG.API.ENDPOINTS['swap']
             // Prepare the swap parameters
-            const amount = parseUnits(fromAmount, Number(fromToken.decimals))
+            const amount = parseUnits(fromAmount, Number(fromToken?.decimals))
 
             const params = {
                 fromChainId: fromNetwork.chainId,
                 toChainId: CONFIG.CHAIN.BASE.chainId, //'137', //
-                fromTokenAddress: fromToken.tokenContractAddress,
+                fromTokenAddress: fromToken?.tokenContractAddress,
                 toTokenAddress: CONFIG.CHAIN.BASE.tokens.USDC.tokenContractAddress, //'0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', //
                 amount: amount.toString(),
                 slippage: '0.015',

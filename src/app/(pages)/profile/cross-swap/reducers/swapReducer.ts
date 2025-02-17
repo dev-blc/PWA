@@ -7,10 +7,7 @@ export const initialSwapState: SwapState = {
     fromNetwork: {
         chainId: CONFIG.CHAIN.BASE.chainId,
         chainName: CONFIG.CHAIN.BASE.chainName,
-        platformId: CONFIG.CHAIN.BASE.platformId,
-        nativeCurrency: CONFIG.CHAIN.BASE.nativeCurrency,
-        rpcUrls: [...CONFIG.CHAIN.BASE.rpcUrls],
-        blockExplorerUrls: [...CONFIG.CHAIN.BASE.blockExplorerUrls],
+        dexTokenApproveAddress: CONFIG.CHAIN.BASE.tokens.USDC.dexTokenApproveAddress,
     },
     fromToken: initialTokens[0],
     fromAmount: '0.0',
@@ -18,6 +15,7 @@ export const initialSwapState: SwapState = {
     isApproved: false,
     routerInfo: null,
     isLoading: false,
+    transactions: [],
 }
 
 export function swapReducer(state: SwapState, action: SwapAction): SwapState {

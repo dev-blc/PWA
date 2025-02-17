@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import type { Network, OKXToken, Token, TokensResponse } from '../../types'
+import type { Network, OKXToken } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
 
@@ -21,9 +21,9 @@ export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
         refetch,
     } = useQuery<OKXToken[], Error>({
         queryKey: ['tokens', selectedNetwork],
-        queryFn: async (): Promise<Token[]> => {
+        queryFn: async (): Promise<OKXToken[]> => {
             const { path } = CONFIG.API.ENDPOINTS['tokens/all']
-            const response = await httpClient.get<TokensResponse>(path, {
+            const response = await httpClient.get<OKXToken[]>(path, {
                 chainId: selectedNetwork,
             })
 
@@ -47,7 +47,7 @@ export const useTokenSelection = ({ fromNetwork }: TokenSelectionProps) => {
             const searchLower = searchQuery.toLowerCase()
             const matchesSearch =
                 token.tokenSymbol.toLowerCase().includes(searchLower) ||
-                token.tokenName.toLowerCase().includes(searchLower)
+                token?.tokenName?.toLowerCase().includes(searchLower)
             return matchesSearch
         }) ?? []
 
