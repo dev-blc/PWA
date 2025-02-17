@@ -23,9 +23,7 @@ export const useNetworkFetching = (wallets: ConnectedWallet[]) => {
         queryFn: async () => {
             const { path } = CONFIG.API.ENDPOINTS['chains']
             const response = await httpClient.get<OKXNetwork[]>(path)
-            console.log('////////response', response)
             if (response.code === '0' && Array.isArray(response.data)) {
-                console.log('////////response.data', response.data)
                 return response.data //response.data.map(chainToNetwork)
             }
 
@@ -41,7 +39,6 @@ export const useNetworkFetching = (wallets: ConnectedWallet[]) => {
         },
         gcTime: 10 * 60 * 1000, // 10 minutes
     })
-    console.log('////////fetchedNetworks', fetchedNetworks)
     // Handle errors outside of the query options
     if (fetchedNetworks === undefined) {
         const error = handleAPIError(new Error('Failed to fetch networks'))

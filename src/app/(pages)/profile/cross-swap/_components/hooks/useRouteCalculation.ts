@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
-import type { RouteCalculationProps, RouteResponseData } from '../../types'
+import type { OKXRoute, RouteCalculationProps } from '../../types'
 import { HttpClient } from '../api/http-client'
 import { CONFIG } from '../config'
 import { handleAPIError } from '../utils/errors'
@@ -35,10 +35,9 @@ export function useRouteCalculation({
                 slippage: '0.015',
             }
 
-            const response = await httpClient.get<RouteResponseData>(path, params)
-
-            if (response.code === '0' && response.data.routerList?.[0]) {
-                const routerResult = response.data.routerList[0]
+            const response = await httpClient.get<OKXRoute[]>(path, params)
+            if (response.code === '0' && response.data[0].routerList?.[0]) {
+                const routerResult = response.data[0].routerList[0]
 
                 dispatch({
                     type: 'SET_RECEIVED_AMOUNT',
