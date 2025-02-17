@@ -4,8 +4,13 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
     const response = NextResponse.next()
 
-    // Logging for debugging
-    console.info('\x1b[35m[middleware]\x1b[0m', '🦩\t', '\x1b[36m' + request.nextUrl.pathname + '\x1b[0m')
+    // Conditional Logging for debugging (remove ANSI codes in production)
+    if (process.env.NODE_ENV !== 'production') {
+        console.info('\x1b[35m[middleware]\x1b[0m', '🦩\t', '\x1b[36m' + request.nextUrl.pathname + '\x1b[0m')
+    } else {
+        // Simplified logging for production (optional, remove if no logging needed)
+        // console.info('[middleware]', '🦩\t', request.nextUrl.pathname)
+    }
 
     // Security headers
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')

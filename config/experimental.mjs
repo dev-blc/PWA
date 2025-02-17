@@ -1,26 +1,20 @@
 // @ts-check
 
-import { inProduction } from '../src/app/_lib/utils/environment.mjs'
-
 /** @type {import('next').NextConfig['experimental']} */
 export const experimentalConfig = {
-    typedRoutes: !inProduction,
-    optimizeServerReact: true,
     optimizePackageImports: [
-        'date-fns',
-        'lucide-react',
-        '@serwist/next',
-        'motion/react',
+        '@radix-ui/react-dialog',
+        '@radix-ui/react-popover',
+        '@radix-ui/react-dropdown-menu',
+        '@radix-ui/react-tooltip',
+        '@radix-ui/react-select',
+        '@radix-ui/react-tabs',
         '@privy-io/react-auth',
         '@privy-io/wagmi',
         '@tanstack/react-query',
     ],
-    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'INP', 'TTFB'],
-    optimisticClientCache: true,
-    serverMinification: true,
-    turbo: {
-        rules: {
-            '*.svg': ['@svgr/webpack'],
-        },
+    serverActions: {
+        bodySizeLimit: '2mb',
     },
+    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'INP', 'TTFB'],
 }
