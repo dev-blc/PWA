@@ -57,8 +57,9 @@ export function createSignature(
     params?: Record<string, unknown>,
 ): { signature: string; timestamp: string } {
     const timestamp = new Date().toISOString().slice(0, -5) + 'Z'
-    const message = preHash(timestamp, method, requestPath, params)
-    const signature = sign(message, CONFIG.API.HEADERS['OK-ACCESS-KEY'] || '')
+    console.log('PARAMS', params)
+    const message = preHash(timestamp, method, requestPath, params || null)
+    const signature = sign(message, CONFIG.API.HEADERS['OK-ACCESS-SECRET'] || '')
     return { signature, timestamp }
 }
 

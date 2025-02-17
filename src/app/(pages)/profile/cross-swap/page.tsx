@@ -1,5 +1,6 @@
 import PageWrapper from '@/components/page-wrapper'
 import CrossChainSwapSection from './_components/cross-chain-swap-section'
+import { SwapProvider } from './context/SwapContext'
 
 export default function ProfileLayout() {
     return (
@@ -8,9 +9,11 @@ export default function ProfileLayout() {
                 backButton: true,
                 title: 'swap',
             }}>
-            <div className='flex flex-1 flex-col gap-3'>
-                <CrossChainSwapSection />
-            </div>
+            <SwapProvider>
+                <div className='flex flex-1 flex-col gap-3'>
+                    <CrossChainSwapSection />
+                </div>
+            </SwapProvider>
         </PageWrapper>
     )
 }

@@ -60,6 +60,12 @@ export interface Network {
     blockExplorerUrls?: string[]
 }
 
+export interface OKXNetwork {
+    chainId: string
+    chainName: string
+    dexTokenApproveAddress: string
+}
+
 export interface ChainsData {
     chains: Chain[]
 }
