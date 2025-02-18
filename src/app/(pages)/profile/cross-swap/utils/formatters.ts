@@ -1,3 +1,5 @@
+import { OKXNetwork, OKXToken } from '../types'
+
 export function formatCurrency(value: number, decimals = 6): string {
     if (isNaN(value)) return '0.00'
 
@@ -31,4 +33,19 @@ export function toDecimals(value: number, decimals: number): string {
 
 export function toWholeNumber(value: string, decimals: number): string {
     return (Number(value) / Math.pow(10, decimals)).toString()
+}
+
+export const tokenAddressToName = (tokenAddress: string, tokens: OKXToken[]) => {
+    const token = tokens.find(token => token.tokenContractAddress === tokenAddress)
+    return token?.tokenSymbol
+}
+
+export const tokenAddressToLogo = (tokenAddress: string, tokens: OKXToken[]) => {
+    const token = tokens.find(token => token.tokenContractAddress === tokenAddress)
+    return token?.tokenLogoUrl
+}
+
+export const chainIdToName = (chainId: string, chains: OKXNetwork[]) => {
+    const chain = chains.find(chain => chain.chainId === chainId)
+    return chain?.chainName
 }
