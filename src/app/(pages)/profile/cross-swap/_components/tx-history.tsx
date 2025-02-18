@@ -1,11 +1,13 @@
-'use client'
+"use client"
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
-import { format } from 'date-fns'
-import { ChevronRight, X } from 'lucide-react'
-import Image from 'next/image'
-import * as React from 'react'
-import { useRef } from 'react'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/app/_components/ui/sheet"
+import { format } from "date-fns"
+import { ChevronRight, X } from "lucide-react"
+import Image from "next/image"
+import * as React from "react"
+import { useRef } from "react"
+import { useSwapContext } from "../context/SwapContext"
+import { OKXNetwork, OKXToken } from "../types"
 
 interface Transaction {
     id: string
@@ -35,11 +37,12 @@ interface Transaction {
 interface TransactionHistoryProps {
     isOpen: boolean
     transactions: Transaction[]
-    networks: string[]
-    tokens: string[]
+    networks: OKXNetwork[]
+    tokens: OKXToken[]
 }
 
 export function TransactionHistory({ isOpen, transactions }: TransactionHistoryProps): React.JSX.Element {
+    const { state, dispatch } = useSwapContext()
     const [isSheetOpen, setIsSheetOpen] = React.useState(isOpen)
     const sheetRef = useRef<HTMLDivElement>(null)
     const dragStartRef = useRef(0)
@@ -47,7 +50,7 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
     const isDraggingRef = useRef(false)
     const animationFrameRef = useRef<number | null>(null)
     const dragThreshold = 150
-
+    // console.log("transactions", state.transactions)
     React.useEffect(() => {
         setIsSheetOpen(isOpen)
     }, [isOpen])
@@ -69,7 +72,7 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
         currentDragRef.current = 0
 
         if (sheetRef.current) {
-            sheetRef.current.style.transition = 'none'
+            sheetRef.current.style.transition = "none"
         }
 
         e.preventDefault()
@@ -95,7 +98,7 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
         e.currentTarget.releasePointerCapture(e.pointerId)
 
         if (sheetRef.current) {
-            sheetRef.current.style.transition = 'transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)'
+            sheetRef.current.style.transition = "transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)"
 
             if (currentDragRef.current > dragThreshold) {
                 handleClose()
@@ -120,8 +123,8 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
                 side='bottom'
                 className='h-[85vh] touch-none rounded-t-[24px] p-4'
                 style={{
-                    transform: 'translateY(0)',
-                    transition: 'transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)',
+                    transform: "translateY(0)",
+                    transition: "transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)",
                 }}>
                 <div
                     className='absolute left-1/2 top-2.5 h-1.5 w-12 -translate-x-1/2 cursor-grab touch-none rounded-full bg-gray-300 active:cursor-grabbing'
@@ -144,7 +147,7 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
                         <div key={transaction.id} className='flex items-start justify-between pt-4'>
                             <div className='flex flex-col'>
                                 <span className='mb-6 text-[11px] font-medium text-[#8F8F8F]'>
-                                    {format(new Date(transaction.date), 'MM/dd/yy')}
+                                    {format(new Date(transaction.date), "MM/dd/yy")}
                                 </span>
                                 <div className='flex'>
                                     <div className='flex items-center'>
@@ -182,7 +185,7 @@ export function TransactionHistory({ isOpen, transactions }: TransactionHistoryP
                                 </div>
                             </div>
                             <div className='mt-[42px] flex h-8 flex-col items-end justify-center'>
-                                {transaction.status !== 'SUCCESS' ? (
+                                {transaction.status !== "SUCCESS" ? (
                                     <div className='flex flex-col items-end'>
                                         <span className='mb-1 text-[12px] text-[#FF9900]'>In progress</span>
                                         <div className='flex items-center'>

@@ -219,7 +219,7 @@
         "proseWrap": "preserve",
         "quoteProps": "consistent",
         "semi": false,
-        "singleQuote": true,
+        "singleQuote": false,
         "trailingComma": "all",
         "useTabs": false,
         "tabWidth": 4,
