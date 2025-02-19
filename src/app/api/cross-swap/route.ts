@@ -9,6 +9,7 @@ export async function POST(req: Request) {
         const httpClient = HttpClient.getInstance()
 
         const requestData = (await req.json()) as Record<string, unknown>
+        console.log(requestData)
         const response = await httpClient.get(CONFIG.API.ENDPOINTS["history"].path, requestData)
         if (response.code !== "0") {
             return NextResponse.json({ message: "Error in the server response" }, { status: 400 })
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
         if (response.msg !== "success") {
             return NextResponse.json({ message: response.msg || "Unknown error" }, { status: 500 })
         }
+        console.log("////", response.data)
         console.log("FETCHED TRANSACTION HISTORY FROM OKX...... RELAYING IT TO THE CLIENT")
         return NextResponse.json({ data: response.data }, { status: 200 })
     } catch (error) {
