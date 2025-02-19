@@ -38,7 +38,18 @@ export const useTransactionHistory = ({
             try {
                 const params = {
                     address: wallets[0].address,
-                    chains: [state.fromNetwork.chainId], //, "42161", "10", "59144", "100", "324", "534352", "1", "8453"],
+                    chains: [
+                        state.fromNetwork.chainId,
+                        "1",
+                        "42161",
+                        "10",
+                        "59144",
+                        "100",
+                        "324",
+                        "534352",
+                        "1",
+                        "8453",
+                    ],
                 }
                 const res = await fetch(`/api/cross-swap`, {
                     method: "POST",
