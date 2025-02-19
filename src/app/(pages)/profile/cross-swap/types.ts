@@ -169,6 +169,28 @@ export interface OKXSwapData {
 }
 // Request/Response Types
 
+export interface OKXHistoryResponse {
+    cursor: string
+    transactionList: OKXHistoryTransaction[]
+}
+
+export interface OKXHistoryTransaction {
+    amount: string
+    chainIndex: string
+    from: [object]
+    hitBlacklist: boolean
+    itype: string
+    methodId: string
+    nonce: string
+    symbol: string
+    tag: string
+    to: [object]
+    tokenAddress: string
+    txFee: string
+    txHash: string
+    txStatus: string
+    txTime: string
+}
 export interface OKXApprovalData {
     data: string
     dexContractAddress: string
@@ -259,8 +281,8 @@ export interface SwapState {
 
 export interface OKXSwapStatus {
     bridgeHash: string
-    crossChainFee: [Object]
-    crossChainInfo: [Object]
+    crossChainFee: [object]
+    crossChainInfo: [object]
     destinationChainGasfee: string
     detailStatus:
         | "WAITING"
