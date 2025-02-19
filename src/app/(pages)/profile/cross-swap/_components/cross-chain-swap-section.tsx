@@ -1,6 +1,6 @@
 "use client"
 
-import { Sheet, SheetContent } from "@/app/_components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/app/_components/ui/sheet"
 import { useWallets } from "@privy-io/react-auth"
 // import { toNumber } from 'lodash'
 import dynamic from "next/dynamic"
@@ -79,7 +79,7 @@ const CrossChainSwapSection = () => {
         onSwapComplete: () => toast.message("Transaction submitted"),
     })
 
-    const { sheetRef } = useSheetDrag(() => setIsSelectOpen(false))
+    const { sheetRef, handleDragStart, handleDrag, handleDragEnd } = useSheetDrag(() => setIsSelectOpen(false))
 
     const handleFromTokenSelect = (token: OKXToken) => {
         dispatch({ type: "SET_FROM_TOKEN", payload: token })
@@ -134,8 +134,20 @@ const CrossChainSwapSection = () => {
             <div className='mx-auto w-full max-w-md space-y-4 overflow-y-scroll p-1 pb-24'>
                 <Sheet open={isSelectOpen} onOpenChange={setIsSelectOpen}>
                     <SheetContent ref={sheetRef} side='bottom' className='h-[85vh] touch-none rounded-t-[24px] p-4'>
+                        <div
+                            className='absolute left-1/2 top-2.5 h-1.5 w-12 -translate-x-1/2 cursor-grab touch-none rounded-full bg-gray-300 active:cursor-grabbing'
+                            onPointerDown={handleDragStart}
+                            onPointerMove={handleDrag}
+                            onPointerUp={handleDragEnd}
+                            onPointerCancel={handleDragEnd}
+                            role='button'
+                            aria-label='Drag to close'
+                        />
+                        <SheetTitle className='sr-only'>Select Token</SheetTitle>
+                        <SheetDescription className='sr-only'>
+                            Select a token from the list to use in your transaction
+                        </SheetDescription>
                         <TokenSelectorDynamic
-                            isOpen={isSelectOpen}
                             onClose={() => setIsSelectOpen(false)}
                             filteredTokens={filteredTokens}
                             selectedNetwork={selectedNetwork}
