@@ -6,6 +6,7 @@ import { useWallets } from "@privy-io/react-auth"
 import dynamic from "next/dynamic"
 import { useState } from "react"
 import { toast } from "sonner"
+import UserInfo from "../../_components/user-info/user-info"
 import { useSwapContext } from "../context/SwapContext"
 import type { OKXToken } from "../types"
 import { ActionButton } from "./ActionButton"
@@ -130,8 +131,13 @@ const CrossChainSwapSection = () => {
 
     return (
         <div className='relative min-h-screen overflow-y-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-            {/* <WalletAccountSection /> */}
-            <div className='mx-auto w-full max-w-md space-y-4 overflow-y-scroll p-1 pb-24'>
+            <div className='mx-auto w-full max-w-md space-y-4 overflow-y-scroll px-3 pb-24 pt-3'>
+                <UserInfo
+                    variant='cross-swap'
+                    onHistoryClick={() => setHistory(true)}
+                    hasTransactions={!!transactionHistory.transactions.length}
+                />
+
                 <Sheet open={isSelectOpen} onOpenChange={setIsSelectOpen}>
                     <SheetContent ref={sheetRef} side='bottom' className='h-[85vh] touch-none rounded-t-[24px] p-4'>
                         <div
@@ -162,6 +168,7 @@ const CrossChainSwapSection = () => {
 
                 <TransactionHistory
                     isOpen={isHistoryOpen}
+                    onOpenChangeAction={setHistory}
                     transactions={transactionHistory.transactions}
                     networks={fetchedNetworks}
                     tokens={filteredTokens}
@@ -186,7 +193,6 @@ const CrossChainSwapSection = () => {
                 onSwapAction={handleSwap}
                 disabled={!state.fromAmount || Number(state.fromAmount) === 0 || isSwapping}
             />
-            <button onClick={() => setHistory(true)}>test txn histiry</button>
         </div>
     )
 }
