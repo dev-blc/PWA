@@ -3,7 +3,15 @@ import { useQuery } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { toast } from "sonner"
 import { useSwapContext } from "../../context/SwapContext"
-import type { APIResponse, OKXNetwork, OKXSwapStatus, OKXToken, Transaction } from "../../types"
+import type {
+    APIResponse,
+    OKXHistoryResponse,
+    OKXHistoryTransaction,
+    OKXNetwork,
+    OKXSwapStatus,
+    OKXToken,
+    Transaction,
+} from "../../types"
 import { chainIdToName, tokenAddressToLogo, tokenAddressToName } from "../../utils/formatters"
 import { CONFIG } from "../config"
 
@@ -23,11 +31,10 @@ export const useTransactionHistory = ({
     const { wallets } = useWallets()
     const { state, dispatch } = useSwapContext()
     const { data: transactions, refetch } = useQuery({
-        queryKey: ["transactionHistory", walletAddress],
+        queryKey: ["transactionHistory", walletAddress, wallets[0]],
         queryFn: async () => {
             if (!walletAddress || !wallets[0]) return []
-
-            let results: Transaction[] = []
+            const results: Transaction[] = []
             try {
                 const params = {
                     address: wallets[0].address,
@@ -41,16 +48,15 @@ export const useTransactionHistory = ({
                     body: JSON.stringify(params),
                 })
 
-                const data = await res.json()
+                const data = (await res.json()) as APIResponse<OKXHistoryResponse[]>
                 if (!data.data?.[0]?.transactionList) {
                     return []
                 }
 
                 const txns = data.data[0].transactionList.filter(
-                    (txn: any) => txn.txStatus === "success" && txn.itype === "2",
+                    (txn: OKXHistoryTransaction) => txn.txStatus === "success" && txn.itype === "2",
                 )
-
-                console.log("txns", txns)
+                toast.message("Fetching transaction history... Please wait")
 
                 for (const txn of txns) {
                     try {
@@ -66,7 +72,6 @@ export const useTransactionHistory = ({
                         })
 
                         const statusData: OKXSwapStatus = ((await res.json()) as APIResponse<OKXSwapStatus[]>).data[0]
-                        console.log("statusData", statusData)
                         if (
                             (statusData.status === "SUCCESS" || statusData.status === "PENDING") &&
                             results.length < 6
@@ -111,9 +116,7 @@ export const useTransactionHistory = ({
                 toast.error("Failed to fetch transaction history")
             }
             dispatch({ type: "SET_HISTORY", payload: results })
-            console.log("BEFOREEE", results)
-
-            console.log("STATW", state.transactions)
+            toast.success("Transaction history fetched successfully")
             return results
         },
         enabled: !!walletAddress && !!fetchedNetworks.length && !!fetchedTokens.length,
