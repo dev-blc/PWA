@@ -1,6 +1,5 @@
 'use client'
 
-<<<<<<< HEAD
 import { useTokenDecimals } from '@/app/(pages)/profile/send/_components/use-token-decimals'
 import { useTransferToken } from '@/app/(pages)/profile/send/_components/use-transfer-tokens'
 import { Button } from '@/app/_components/ui/button'
@@ -16,27 +15,10 @@ import TokenSelector from './token-selector'
 
 interface PayOtherPlayerFormProps {
     recipientAddress: Address
-=======
-import * as React from 'react'
-import { useEffect, useRef, useState } from 'react'
-import { Button } from '@/app/_components/ui/button'
-import { Input } from '@/app/_components/ui/input'
-import { cn } from '@/lib/utils/tailwind'
-import { useTokenDecimals } from '@/app/(pages)/profile/send/_components/use-token-decimals'
-import { toast } from 'sonner'
-import { Address, formatUnits, parseUnits } from 'viem'
-import TokenSelector from './token-selector'
-import { PaymentConfirmationDialog } from './payment-confirmation-dialog'
-
-interface PayOtherPlayerFormProps {
-    recipientAddress: Address
-    tokenAddress: Address
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
     avatar: string
     displayName: string
 }
 
-<<<<<<< HEAD
 const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddress, avatar, displayName }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [inputValue, setInputValue] = useState<string>('')
@@ -51,26 +33,12 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
     const [showConfirmation, setShowConfirmation] = useState(false)
     const { transferToken, isConfirming, isSuccess, setIsSuccess } = useTransferToken(selectedToken.address)
     const { tokenDecimalsData } = useTokenDecimals(selectedToken.address)
-=======
-const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({
-    recipientAddress,
-    tokenAddress,
-    avatar,
-    displayName,
-}) => {
-    const { tokenDecimalsData } = useTokenDecimals(tokenAddress)
-    const inputRef = useRef<HTMLInputElement | null>(null)
-    const [inputValue, setInputValue] = useState<string>('')
-    const [selectedToken, setSelectedToken] = useState('USDC')
-    const [showConfirmation, setShowConfirmation] = useState(false)
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
     }
 
     const handlePayButtonClick = () => {
-<<<<<<< HEAD
         setIsSuccess(false)
         setShowConfirmation(true)
     }
@@ -98,15 +66,6 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({
             toast.error('Payment failed. Please try again.')
             setShowConfirmation(false)
         }
-=======
-        setShowConfirmation(true)
-    }
-
-    const handleConfirmPayment = () => {
-        // TODO: Implement actual payment functionality
-        setShowConfirmation(false)
-        toast.success('Payment functionality will be implemented here')
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
     }
 
     const clearInput = () => {
@@ -114,17 +73,12 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({
         inputRef.current?.focus()
     }
 
-<<<<<<< HEAD
     const handleTokenSelectAction = async (token: string, address: `0x${string}`) => {
         setSelectedToken({ symbol: token, address })
     }
 
     const handleMaxClick = (amount: string) => {
         setInputValue(amount)
-=======
-    const handleTokenSelectAction = async (token: string) => {
-        setSelectedToken(token)
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
     }
 
     return (
@@ -183,11 +137,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({
                 </div>
             </div>
             <div className='fixed inset-x-0 bottom-0 flex w-full flex-col items-center justify-center space-y-2 bg-white px-6 pb-4'>
-<<<<<<< HEAD
                 <TokenSelector onTokenSelectAction={handleTokenSelectAction} onMaxClick={handleMaxClick} />
-=======
-                <TokenSelector onTokenSelectAction={handleTokenSelectAction} />
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
                 <Button
                     disabled={inputValue === ''}
                     onClick={handlePayButtonClick}
@@ -198,24 +148,12 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({
             <PaymentConfirmationDialog
                 isOpen={showConfirmation}
                 onCloseAction={async () => setShowConfirmation(false)}
-<<<<<<< HEAD
                 onConfirmAction={handleConfirmPayment}
                 avatar={avatar}
                 displayName={displayName}
                 amount={inputValue}
                 tokenSymbol={selectedToken.symbol}
                 isPending={isConfirming}
-=======
-                onConfirmAction={async () => {
-                    // TODO: Implement actual payment functionality
-                    setShowConfirmation(false)
-                    toast.success('Payment functionality will be implemented here')
-                }}
-                avatar={avatar}
-                displayName={displayName}
-                amount={inputValue}
-                tokenSymbol={selectedToken}
->>>>>>> 1b8dbb31 (added pay other player form and token selector component, with new flow for user to user payments UI)
             />
             <style jsx>{`
                 @keyframes caret-blink {
