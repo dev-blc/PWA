@@ -13,7 +13,7 @@ const network = process.env.NEXT_PUBLIC_NETWORK || 'development'
 const chainConfig = {
     mainnet: base,
     testnet: baseSepolia,
-    development: baseSepolia,
+    development: base,
 }
 
 const chain = chainConfig[network as keyof typeof chainConfig]
