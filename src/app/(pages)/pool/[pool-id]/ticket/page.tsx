@@ -1,9 +1,9 @@
 'use client'
 
-import QRCode from 'react-qr-code'
-import { usePoolDetails } from './_components/use-pool-details'
 import PageWrapper from '@/components/page-wrapper'
 import { useUserInfo } from '@/hooks/use-user-info'
+import QRCode from 'react-qr-code'
+import { usePoolDetails } from './_components/use-pool-details'
 
 const TicketPage = ({ params: { 'pool-id': poolId } }: { params: { 'pool-id': string } }) => {
     const { poolDetails } = usePoolDetails(poolId)
