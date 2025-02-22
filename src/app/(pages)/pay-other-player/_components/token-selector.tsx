@@ -9,16 +9,17 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { getBalance } from '@wagmi/core'
 import { dropTokenAddress } from '@/types/contracts'
+import type { Address } from 'viem'
 
 interface Token {
     symbol: string
     icon: string
     balance: string
+    address: Address
 }
 
 interface TokenSelectorProps {
-    defaultToken?: string
-    onTokenSelectAction?: (token: string, amount?: string) => void
+    onTokenSelect?: (address: Address) => void
     onMaxClick?: (amount: string) => void
 }
 
@@ -27,19 +28,21 @@ const initialTokens: Token[] = [
         symbol: 'USDC',
         icon: '/app/icons/svg/usdc-icon.png',
         balance: '0',
+        address: currentTokenAddress,
     },
     {
         symbol: 'DROP',
         icon: '/app/icons/svg/drop-token.png',
         balance: '0',
+        address: dropTokenAddress[8453],
     },
 ]
 
-export default function TokenSelector({ onTokenSelectAction, onMaxClick }: TokenSelectorProps) {
+export default function TokenSelector({ onTokenSelect, onMaxClick }: TokenSelectorProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedToken, setSelectedToken] = useState('DROP')
+    const [selectedAddress, setSelectedAddress] = useState<Address>(dropTokenAddress[8453])
     const [tokens, setTokens] = useState<Token[]>(initialTokens)
-    const currentToken = tokens.find(t => t.symbol === selectedToken) || tokens[0]
+    const currentToken = tokens.find(t => t.address === selectedAddress) || tokens[0]
     const { wallets } = useWallets()
 
     useEffect(() => {
@@ -69,15 +72,15 @@ export default function TokenSelector({ onTokenSelectAction, onMaxClick }: Token
                 console.log(newTokens)
             })
             .catch(err => console.log(err))
-    }, [selectedToken, tokens, wallets])
+    }, [selectedAddress, tokens, wallets])
 
-    const handleTokenSelect = (symbol: string) => {
-        const token = tokens.find(t => t.symbol === symbol)
+    const handleTokenSelect = (address: Address) => {
+        const token = tokens.find(t => t.address === address)
         if (!token) return
 
-        setSelectedToken(symbol)
+        setSelectedAddress(address)
         setIsOpen(false)
-        onTokenSelectAction?.(symbol)
+        onTokenSelect?.(address)
     }
 
     return (
@@ -88,8 +91,8 @@ export default function TokenSelector({ onTokenSelectAction, onMaxClick }: Token
                     <div className='absolute inset-x-0 bottom-full mb-2 rounded-[32px] border border-[#E5E7EB] bg-white shadow-lg'>
                         {tokens.map(token => (
                             <Button
-                                key={token.symbol}
-                                onClick={() => handleTokenSelect(token.symbol)}
+                                key={token.address}
+                                onClick={() => handleTokenSelect(token.address)}
                                 className='flex h-16 w-full items-center space-x-3 bg-white px-6 text-black first:rounded-t-[32px] last:rounded-b-[32px] hover:bg-gray-50 focus:bg-gray-50'>
                                 <div className='flex size-9 items-center justify-center'>
                                     <Image

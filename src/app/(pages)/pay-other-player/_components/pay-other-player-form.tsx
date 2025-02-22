@@ -25,18 +25,11 @@ interface PayOtherPlayerFormProps {
 const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddress, avatar, displayName }) => {
     const inputRef = useRef<HTMLInputElement | null>(null)
     const [inputValue, setInputValue] = useState<string>('')
-    const [selectedToken, setSelectedToken] = useState<{
-        symbol: string
-        address: `0x${string}`
-    }>({
-        symbol: 'DROP',
-        address: currentTokenAddress,
-    })
-
+    const [selectedTokenAddress, setSelectedTokenAddress] = useState<Address>(dropTokenConfig.address[8453])
     const [showConfirmation, setShowConfirmation] = useState(false)
-    const { transferToken, isConfirming, isSuccess, setIsSuccess } = useTransferToken(selectedToken.address)
+    const { transferToken, isConfirming, isSuccess, setIsSuccess } = useTransferToken(selectedTokenAddress)
     const { executeTransactions } = useTransactions()
-    const { tokenDecimalsData } = useTokenDecimals(selectedToken.address)
+    const { tokenDecimalsData } = useTokenDecimals(selectedTokenAddress)
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
@@ -59,7 +52,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         // TODO: Implement actual payment functionality
         const amount = parseUnits(inputValue, 18)
         console.log('drop', dropTokenConfig.address[8453])
-        if (selectedToken.symbol === 'USDC') {
+        if (selectedTokenAddress === currentTokenAddress) {
             const amountUSDC = parseUnits(inputValue, tokenDecimalsData?.tokenDecimals)
             void transferToken(recipientAddress, amountUSDC)
                 .then(() => {
@@ -104,8 +97,8 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         inputRef.current?.focus()
     }
 
-    const handleTokenSelectAction = (token: string, address: `0x${string}`) => {
-        setSelectedToken({ symbol: token, address })
+    const handleTokenSelect = (address: Address) => {
+        setSelectedTokenAddress(address)
     }
 
     const handleMaxClick = (amount: string) => {
@@ -168,7 +161,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
                 </div>
             </div>
             <div className='fixed inset-x-0 bottom-0 flex w-full flex-col items-center justify-center space-y-2 bg-white px-6 pb-4'>
-                <TokenSelector onTokenSelectAction={handleTokenSelectAction} onMaxClick={handleMaxClick} />
+                <TokenSelector onTokenSelect={handleTokenSelect} onMaxClick={handleMaxClick} />
                 <Button
                     disabled={inputValue === ''}
                     onClick={handlePayButtonClick}
@@ -183,7 +176,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
                 avatar={avatar}
                 displayName={displayName}
                 amount={inputValue}
-                tokenSymbol={selectedToken.symbol}
+                tokenSymbol={selectedTokenAddress === currentTokenAddress ? 'USDC' : 'DROP'}
                 isPending={isConfirming}
             />
             <style jsx>{`
