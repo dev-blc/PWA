@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@reference "tailwindcss";
 
 @plugin "tailwindcss-animate";
 
@@ -115,8 +115,8 @@
         min-width: 0;
     }
 
-    input[type='date']::-webkit-calendar-picker-indicator,
-    input[type='time']::-webkit-calendar-picker-indicator {
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
         position: absolute;
         top: 0;
         left: 0;
@@ -180,7 +180,7 @@
     }
 
     .pool-button {
-        @apply bg-[#4078F4] text-white hover:bg-[#4078F4]/90 active:bg-[#3567DD] !important;
+        @apply bg-[#4078F4] text-white hover:bg-[#4078F4]/90 active:bg-[#3567DD];
     }
 
     .pool-text {
