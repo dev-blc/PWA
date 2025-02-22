@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils/tailwind'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { Address, parseUnits } from 'viem'
-import { PaymentConfirmationDialog } from './payment-confirmation-dialog'
-import TokenSelector from './token-selector'
+import type { Address } from 'viem'
+import { parseUnits } from 'viem'
+import { PaymentConfirmationDialog } from './_components/payment-confirmation-dialog'
+import TokenSelector from './_components/token-selector'
 
 interface PayOtherPlayerFormProps {
     recipientAddress: Address
@@ -51,7 +52,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         }
     }, [isSuccess])
 
-    const handleConfirmPayment = async () => {
+    const handleConfirmPayment = () => {
         if (!inputValue || !tokenDecimalsData?.tokenDecimals) {
             toast.error('Invalid amount')
             setShowConfirmation(false)
@@ -60,7 +61,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
 
         try {
             const amount = parseUnits(inputValue, tokenDecimalsData.tokenDecimals)
-            await transferToken(recipientAddress, amount)
+            void transferToken(recipientAddress, amount)
         } catch (error) {
             console.error('Payment failed:', error)
             toast.error('Payment failed. Please try again.')
@@ -73,7 +74,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         inputRef.current?.focus()
     }
 
-    const handleTokenSelectAction = async (token: string, address: `0x${string}`) => {
+    const handleTokenSelectAction = (token: string, address: `0x${string}`) => {
         setSelectedToken({ symbol: token, address })
     }
 
@@ -147,7 +148,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
             </div>
             <PaymentConfirmationDialog
                 isOpen={showConfirmation}
-                onCloseAction={async () => setShowConfirmation(false)}
+                onCloseAction={() => setShowConfirmation(false)}
                 onConfirmAction={handleConfirmPayment}
                 avatar={avatar}
                 displayName={displayName}
