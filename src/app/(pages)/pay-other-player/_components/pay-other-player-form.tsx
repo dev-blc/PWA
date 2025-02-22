@@ -9,9 +9,12 @@ import { cn } from '@/lib/utils/tailwind'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { Address, parseUnits } from 'viem'
+import type { Address } from 'viem'
+import { getAbiItem, parseUnits } from 'viem'
 import { PaymentConfirmationDialog } from './payment-confirmation-dialog'
 import TokenSelector from './token-selector'
+import { dropTokenConfig } from '@/types/contracts'
+import useTransactions from '@/app/_client/hooks/use-transactions'
 
 interface PayOtherPlayerFormProps {
     recipientAddress: Address
@@ -32,6 +35,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
 
     const [showConfirmation, setShowConfirmation] = useState(false)
     const { transferToken, isConfirming, isSuccess, setIsSuccess } = useTransferToken(selectedToken.address)
+    const { executeTransactions } = useTransactions()
     const { tokenDecimalsData } = useTokenDecimals(selectedToken.address)
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,21 +55,48 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         }
     }, [isSuccess])
 
-    const handleConfirmPayment = async () => {
-        if (!inputValue || !tokenDecimalsData?.tokenDecimals) {
-            toast.error('Invalid amount')
+    const handleConfirmPayment = () => {
+        // TODO: Implement actual payment functionality
+        const amount = parseUnits(inputValue, 18)
+        console.log('drop', dropTokenConfig.address[8453])
+        if (selectedToken.symbol === 'USDC') {
+            const amountUSDC = parseUnits(inputValue, tokenDecimalsData?.tokenDecimals)
+            void transferToken(recipientAddress, amountUSDC)
+                .then(() => {
+                    toast.success('Successfully transferred USDC')
+                })
+                .catch(error => {
+                    console.error('Transfer Token Error', error)
+                    toast.error('Failed to transfer USDC')
+                })
             setShowConfirmation(false)
             return
         }
+        const transferFunction = getAbiItem({
+            abi: dropTokenConfig.abi,
+            name: 'transfer',
+        })
+        const args = [
+            {
+                address: dropTokenConfig.address[8453],
+                abi: [transferFunction],
+                functionName: transferFunction.name,
+                args: [recipientAddress, amount],
+            },
+        ]
 
         try {
-            const amount = parseUnits(inputValue, tokenDecimalsData.tokenDecimals)
-            await transferToken(recipientAddress, amount)
+            void executeTransactions(args, {
+                type: 'TRANSFER_TOKEN',
+                onSuccess: () => {
+                    toast.success('Successfully transferred Drop Tokems')
+                },
+            })
         } catch (error) {
-            console.error('Payment failed:', error)
-            toast.error('Payment failed. Please try again.')
-            setShowConfirmation(false)
+            console.log('claimWinning Error', error)
+            toast.error('Failed to claim winnings')
         }
+        setShowConfirmation(false)
     }
 
     const clearInput = () => {
@@ -73,7 +104,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
         inputRef.current?.focus()
     }
 
-    const handleTokenSelectAction = async (token: string, address: `0x${string}`) => {
+    const handleTokenSelectAction = (token: string, address: `0x${string}`) => {
         setSelectedToken({ symbol: token, address })
     }
 
@@ -147,7 +178,7 @@ const PayOtherPlayerForm: React.FC<PayOtherPlayerFormProps> = ({ recipientAddres
             </div>
             <PaymentConfirmationDialog
                 isOpen={showConfirmation}
-                onCloseAction={async () => setShowConfirmation(false)}
+                onCloseAction={() => setShowConfirmation(false)}
                 onConfirmAction={handleConfirmPayment}
                 avatar={avatar}
                 displayName={displayName}

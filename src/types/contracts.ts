@@ -1546,7 +1546,7 @@ export const tokenConfig = { address: tokenAddress, abi: tokenAbi } as const
 
 export const dropTokenAddress = {
     8453: '0xd8a698486782d0d3fa336C0F8dd7856196C97616',
-    84532: '',
+    84532: '0xfD2Ec58cE4c87b253567Ff98ce2778de6AF0101b',
 } as const
 
 export const dropTokenAbi = [

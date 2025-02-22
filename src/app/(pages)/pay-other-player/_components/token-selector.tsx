@@ -1,54 +1,75 @@
 'use client'
 
 import { Button } from '@/app/_components/ui/button'
-import { usdcDeployments } from '@/app/_lib/blockchain/constants'
-import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
+import { currentTokenAddress, serverConfig } from '@/app/_server/blockchain/server-config'
 import { cn } from '@/lib/utils/tailwind'
 import { useWallets } from '@privy-io/react-auth'
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
-import type { Address } from 'viem'
-import { useBalance, useChainId } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { getBalance } from '@wagmi/core'
+import { dropTokenAddress } from '@/types/contracts'
+
+interface Token {
+    symbol: string
+    icon: string
+    balance: string
+}
 
 interface TokenSelectorProps {
     defaultToken?: string
-    onTokenSelectAction?: (tokenSymbol: string, tokenAddress: `0x${string}`) => void
+    onTokenSelectAction?: (token: string, amount?: string) => void
     onMaxClick?: (amount: string) => void
-    tokenBalances?: Record<`0x${string}`, string>
 }
+
+const initialTokens: Token[] = [
+    {
+        symbol: 'USDC',
+        icon: '/app/icons/svg/usdc-icon.png',
+        balance: '0',
+    },
+    {
+        symbol: 'DROP',
+        icon: '/app/icons/svg/drop-token.png',
+        balance: '0',
+    },
+]
 
 export default function TokenSelector({ onTokenSelectAction, onMaxClick }: TokenSelectorProps) {
     const [isOpen, setIsOpen] = useState(false)
-
-    const chainId = useChainId()
+    const [selectedToken, setSelectedToken] = useState('DROP')
+    const [tokens, setTokens] = useState<Token[]>(initialTokens)
+    const currentToken = tokens.find(t => t.symbol === selectedToken) || tokens[0]
     const { wallets } = useWallets()
 
-    const tokens = [
-        {
-            symbol: 'DROP',
-            icon: '/app/images/drop-token.png',
-            address: currentTokenAddress,
-            balance:
-                useBalance({
-                    address: wallets[0]?.address as Address,
-                    token: currentTokenAddress,
-                }).data?.formatted || '0',
-        },
-        {
-            symbol: 'USDC',
-            icon: '/app/images/usdc-icon.png',
-            address: usdcDeployments[chainId as keyof typeof usdcDeployments],
-            balance:
-                useBalance({
-                    address: wallets[0]?.address as Address,
-                    token: usdcDeployments[chainId as keyof typeof usdcDeployments],
-                }).data?.formatted || '0',
-        },
-    ]
-    const [selectedToken, setSelectedToken] = useState('DROP')
-
-    const currentToken = tokens.find(t => t.symbol === selectedToken) || tokens[0]
+    useEffect(() => {
+        const fetchBalance = async () => {
+            const dropBalance = await getBalance(serverConfig, {
+                address: wallets[0].address as `0x${string}`,
+                token: dropTokenAddress[8453],
+            })
+            const usdcBalance = await getBalance(serverConfig, {
+                address: wallets[0].address as `0x${string}`,
+                token: currentTokenAddress,
+            })
+            console.log(dropBalance, usdcBalance)
+            return { dropBalance, usdcBalance }
+        }
+        fetchBalance()
+            .then(balances => {
+                console.log(balances)
+                const newTokens = tokens.map(token => {
+                    return {
+                        ...token,
+                        balance:
+                            token.symbol === 'USDC' ? balances.usdcBalance.formatted : balances.dropBalance.formatted,
+                    }
+                })
+                setTokens(newTokens)
+                console.log(newTokens)
+            })
+            .catch(err => console.log(err))
+    }, [selectedToken, tokens, wallets])
 
     const handleTokenSelect = (symbol: string) => {
         const token = tokens.find(t => t.symbol === symbol)
@@ -56,7 +77,7 @@ export default function TokenSelector({ onTokenSelectAction, onMaxClick }: Token
 
         setSelectedToken(symbol)
         setIsOpen(false)
-        onTokenSelectAction?.(symbol, token.address)
+        onTokenSelectAction?.(symbol)
     }
 
     return (
