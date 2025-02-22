@@ -1,19 +1,22 @@
-'use client'
+"use client"
 
-import { Button } from '@/app/_components/ui/button'
-import { Input } from '@/app/_components/ui/input'
-import { currentTokenAddress } from '@/app/_server/blockchain/server-config'
-import { appActions, appStore$ } from '@/app/stores/app.store'
-import { use$ } from '@legendapp/state/react'
-import { useEffect, useState } from 'react'
-import Container from '../../claim-winning/_components/container'
-import SectionContent from '../../claim-winning/_components/section-content'
-import { useTokenDecimals } from './use-token-decimals'
-import { useTransferToken } from './use-transfer-tokens'
+import { Button } from "@/app/_components/ui/button"
+import { Input } from "@/app/_components/ui/input"
+import { currentTokenAddress } from "@/app/_server/blockchain/server-config"
+import { appActions, appStore$ } from "@/app/stores/app.store"
+import { use$ } from "@legendapp/state/react"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { Address } from "viem"
+import Container from "../../claim-winning/_components/container"
+import SectionContent from "../../claim-winning/_components/section-content"
+import { useTokenDecimals } from "./use-token-decimals"
+import { useTransferToken } from "./use-transfer-tokens"
 
 export default function AmountSection() {
-    const [amount, setAmount] = useState('')
-    const [withdrawAddress, setWithdrawAddress] = useState('')
+    const [amount, setAmount] = useState("")
+    const [withdrawAddress, setWithdrawAddress] = useState("")
+    const searchParams = useSearchParams()
     const isRouting = use$(appStore$.settings.isRouting)
 
     const handleAmountInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,11 +30,18 @@ export default function AmountSection() {
     const { transferToken, isSuccess, setIsSuccess } = useTransferToken()
 
     useEffect(() => {
-        const addressParam = searchParams?.get('address')
+        const addressParam = searchParams?.get("address")
         if (addressParam) {
             setWithdrawAddress(addressParam)
         }
     }, [searchParams])
+
+    const onWithdrawButtonClicked = (amount: string, withdrawAddress: string) => {
+        void transferToken(
+            withdrawAddress as Address,
+            BigInt(Number(amount) * Math.pow(10, Number(tokenDecimalsData?.tokenDecimals ?? 0))),
+        )
+    }
 
     useEffect(() => {
         if (!isRouting) {
@@ -50,8 +60,8 @@ export default function AmountSection() {
 
     useEffect(() => {
         if (isSuccess) {
-            setAmount('')
-            setWithdrawAddress('')
+            setAmount("")
+            setWithdrawAddress("")
             setIsSuccess(false)
         }
     }, [isSuccess, setIsSuccess])
@@ -64,7 +74,7 @@ export default function AmountSection() {
                         <h3 className='text-[11pt] font-semibold text-black'>Withdraw Amount</h3>
                         <h3 className='text-[36pt] font-bold text-[#4078FA]'>
                             <div className='flex items-center'>
-                                <span className={`mr-px ${amount ? 'text-black' : 'text-gray-400'}`}>$</span>
+                                <span className={`mr-px ${amount ? "text-black" : "text-gray-400"}`}>$</span>
                                 <Input
                                     value={amount}
                                     onChange={handleAmountInputChange}
@@ -92,7 +102,7 @@ export default function AmountSection() {
                         </h3>
                         <p className='text-[12px] leading-[14px]'>
                             <span className='font-bold'>Important</span>: Only send to an ERC20 token wallet that
-                            accepts USDC. Failure to do this will result in a{' '}
+                            accepts USDC. Failure to do this will result in a{" "}
                             <span className='mx-1 font-bold'>loss</span>
                             of your funds. This transaction is not refundable.
                         </p>
