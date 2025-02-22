@@ -7,8 +7,8 @@ import { createPortal } from 'react-dom'
 
 interface PaymentConfirmationDialogProps {
     isOpen: boolean
-    onCloseAction: () => Promise<void>
-    onConfirmAction: () => Promise<void>
+    onCloseAction?: () => void
+    onConfirmAction?: () => void
     avatar: string
     displayName: string
     amount: string

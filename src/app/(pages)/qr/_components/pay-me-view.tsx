@@ -50,7 +50,7 @@ export default function PayMeView() {
             </div>
 
             {/* Help Section */}
-            <button className='mt-3 mb-4 flex items-center gap-2 text-blue-600 hover:text-blue-700'>
+            <button className='mb-4 mt-3 flex items-center gap-2 text-blue-600 hover:text-blue-700'>
                 <Info className='size-4' />
                 <span className='text-[13px]'>How do I receive tokens?</span>
             </button>

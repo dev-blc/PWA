@@ -5,7 +5,8 @@ import { tokenAbi } from '@/types/contracts'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Address, getAbiItem, Hash } from 'viem'
+import type { Address, Hash } from 'viem'
+import { getAbiItem } from 'viem'
 import { useBalance, useWaitForTransactionReceipt } from 'wagmi'
 
 export function useTransferToken(tokenAddress?: Address) {
@@ -61,8 +62,8 @@ export function useTransferToken(tokenAddress?: Address) {
     useEffect(() => {
         if (isConfirmed && result.hash && result.hash !== lastConfirmedHash) {
             toast.success('Successfully sent tokens')
-            queryClient.invalidateQueries({ queryKey: ['balance'] })
-            refetchBalance()
+            void queryClient.invalidateQueries({ queryKey: ['balance'] })
+            void refetchBalance()
             setLastConfirmedHash(result.hash)
             setIsSuccess(true)
         }
