@@ -8,6 +8,9 @@ import { formatBalance } from '@/app/_lib/utils/balance'
 import BalanceSkeleton from '@/app/_components/balance/balance-skeleton'
 import EncryptText from '@/app/_components/balance/encrypt-text'
 import FormattedBalance from '@/app/_components/balance/formatted-balance'
+import { useState } from 'react'
+import { dropTokenAddress } from '@/types/contracts'
+import NumberTicker from '@/app/_components/ui/number-ticker'
 
 const zeroBalance = {
     value: BigInt(0),
@@ -20,9 +23,23 @@ const zeroBalance = {
 export default function PoolsBalance() {
     const { user } = usePrivy()
     const address = user?.wallet?.address as Address
+    // const [dropBalance, setDropBalance] = useState('0')
 
     const { data: balance, isLoading } = useBalance({
         token: currentTokenAddress,
+        address,
+        query: {
+            refetchInterval: 20_000,
+            select: data => ({
+                ...data,
+                ...formatBalance(data.value, data.decimals),
+            }),
+            enabled: Boolean(address),
+        },
+    })
+
+    const { data: dropBalance } = useBalance({
+        token: dropTokenAddress[8453],
         address,
         query: {
             refetchInterval: 20_000,
@@ -59,7 +76,21 @@ export default function PoolsBalance() {
                         fill='white'
                     />
                 </svg>
-                <span className='text-[12px] text-white'>Drop Tokens: 1250</span>
+                <span className='text-[12px] text-white'>
+                    <span className='text-[12px] text-white'>
+                        <NumberTicker
+                            value={(dropBalance || zeroBalance).integerPart}
+                            className='text-[12px] text-white'
+                        />
+                        <span>.</span>
+                        <NumberTicker
+                            value={(dropBalance || zeroBalance).fractionalPart}
+                            className='text-[12px] text-white'
+                            padding={2}
+                        />
+                    </span>
+                    <span className='ml-2 text-sm'>{(dropBalance || zeroBalance).symbol}</span>
+                </span>
             </div>
         </section>
     )
