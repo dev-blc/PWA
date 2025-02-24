@@ -37,7 +37,6 @@ export function ActionButton({ isApproved, onApproveAction, onSwapAction, disabl
                 <button
                     onClick={handleAction}
                     disabled={disabled || isLoading}
-                   
                     className='h-[46px] w-full rounded-[2rem] bg-blue-500 bg-cta px-6 py-[11px] text-center text-base font-semibold leading-normal text-white shadow-md hover:bg-blue-600 active:shadow-lg disabled:opacity-50'>
                     {isLoading ? (
                         <span className='flex items-center justify-center'>
