@@ -7,11 +7,13 @@ import { useDisconnect } from 'wagmi'
 import { useServerActionMutation } from './server-action-hooks'
 import { createUserAction } from '@/server/actions/create-user.action'
 import { useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 
 export function useAuth() {
     const router = useRouter()
     const queryClient = useQueryClient()
     const { user } = usePrivy()
+    const [userCreated, setUserCreated] = useState(false) // Flag to track user creation
 
     const { mutate: createNewUser } = useServerActionMutation(createUserAction, {
         onSuccess: () => {
@@ -20,6 +22,7 @@ export function useAuth() {
                 richColors: true,
                 description: 'Please fill in your profile information.',
             })
+            setUserCreated(true)
         },
         onError: error => {
             console.error('[use-auth] error creating user:', error)
@@ -64,20 +67,24 @@ export function useAuth() {
     }
 
     const { login } = useLogin({
-        async onComplete({user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount}) {
+        onComplete({ user, isNewUser, wasAlreadyAuthenticated, loginMethod, loginAccount }) {
             console.log('[use-auth] auth complete')
             queryClient.invalidateQueries({ queryKey: ['userAdminStatus'] })
-
-            if (isNewUser) {
+            if (wasAlreadyAuthenticated) {
+                console.log('[use-auth] already authenticated')
+                return
+            }
+            if (isNewUser && !userCreated) {
                 router.replace('/profile/new')
                 console.log('[use-auth] new user', { loginMethod, loginAccount })
                 // this mutation does not need any arguments, so we pass undefined
-                createNewUser(undefined)
-                return
-            }
-
-            if (wasAlreadyAuthenticated) {
-                console.log('[use-auth] already authenticated')
+                createNewUser(undefined, {
+                    onSuccess: () => {
+                        console.log('[use-auth] user created in database')
+                        setUserCreated(true)
+                        return
+                    },
+                })
                 return
             }
 
