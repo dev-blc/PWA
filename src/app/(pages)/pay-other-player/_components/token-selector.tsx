@@ -72,7 +72,7 @@ export default function TokenSelector({ onTokenSelect, onMaxClick }: TokenSelect
                 console.log(newTokens)
             })
             .catch(err => console.log(err))
-    }, [selectedAddress, tokens, wallets])
+    }, [selectedAddress, wallets])
 
     const handleTokenSelect = (address: Address) => {
         const token = tokens.find(t => t.address === address)
