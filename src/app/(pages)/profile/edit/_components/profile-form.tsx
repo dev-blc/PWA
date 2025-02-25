@@ -3,10 +3,10 @@
 import { Button } from '@/app/_components/ui/button'
 import { Label } from '@/app/_components/ui/label'
 import { useRouter } from 'next/navigation'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFormState } from 'react-dom'
 import { toast } from 'sonner'
-import { Tables } from '@/types/db'
+import type { Tables } from '@/types/db'
 import { useAppStore } from '@/app/_client/providers/app-store.provider'
 import Text from '@/app/_components/forms-controls/text.control'
 import AvatarUploader from './avatar-uploader'
@@ -32,8 +32,6 @@ const formFields = [
         propName: 'name',
     },
 ] as const
-
-type FormFieldKey = (typeof formFields)[number]['key']
 
 const initialState = {
     message: '',
@@ -85,12 +83,12 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
             return
         }
         if (state?.message === 'Profile updated successfully') {
-            queryClient.invalidateQueries({
+            void queryClient.invalidateQueries({
                 queryKey: ['user-info', user.id],
             })
-            router.back()
+            router.push('/pools')
         }
-    }, [state?.message, router, ready])
+    }, [state.message, router, ready, user?.id, queryClient])
 
     const handleChange = (value: string) => {
         if (value === 'avatar') {
@@ -109,7 +107,7 @@ export default function ProfileForm({ userInfo }: ProfilePageProps) {
             }}
             className='mx-auto flex w-full max-w-full flex-col'>
             {formFields.map(field => {
-                const errors = state?.errors && field.key in state.errors ? state.errors[field.key as FormFieldKey] : []
+                const errors = state?.errors && field.key in state.errors ? state.errors[field.key] : []
                 let defaultValue: string | undefined
 
                 if (field.key === 'displayName') {
